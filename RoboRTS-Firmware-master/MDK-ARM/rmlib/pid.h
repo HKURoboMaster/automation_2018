@@ -65,7 +65,7 @@ typedef struct pid_t
                        uint32_t      inte_limit,
                        float         p,
                        float         i,
-                       float         d);
+                       float         d); //创建实例了以后可以通过init来改变值
   void (*f_pid_reset)(struct pid_t *pid, float p, float i, float d);
  
 } pid_t;

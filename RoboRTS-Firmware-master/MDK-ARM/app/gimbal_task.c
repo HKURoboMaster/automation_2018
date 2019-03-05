@@ -44,6 +44,8 @@
 #include "string.h"
 
 #include "kalman_filter.h"
+//If you need to debug pls define this stuff
+#define DEBUG_GIM_PID
 
 //#define OLD_TRIGGER
 /* gimbal patrol angle (degree)*/
@@ -77,10 +79,25 @@ int pit_angle_fdb_js;
 int pit_angle_ref_js;
 int pit_speed_fdb_js;
 int pit_speed_ref_js;
-float ki=0;
-float kp=130.0;
-float kd=205.2;
+/*-------------EricEditedSTART----------------*/ //19.03.03
+#ifdef DEBUG_GIM_PID
+float kp_pit =130.0; //156.0, 1, 450.0
+float ki_pit = 0;
+float kd_pit = 205.2;
 
+float kp_yaw = 156.0;
+float ki_yaw = 1;
+float kd_yaw = 450.0;
+
+float speed_p_kp = 0; //3
+float speed_p_ki = 0;
+float speed_p_kd = 0; //3
+
+float speed_y_kp = 0; //3
+float speed_y_ki = 0;
+float speed_y_kd = 0; //1.2
+#endif
+/*--------------EricEditedEND--------------*/
 typedef struct  // speed_calc_data_t
 {
   int delay_cnt;
@@ -215,7 +232,27 @@ void gimbal_task(void const *argu)
     default:
     break;
   }
-
+	
+	/*---------------EricEditedSTART---------------*/ //19.03.03
+	#ifdef DEBUG_GIM_PID
+  pid_pit.p = kp_pit;
+	pid_pit.i = ki_pit;
+	pid_pit.d = kd_pit;
+	
+	pid_yaw.p = kp_yaw;
+	pid_yaw.i = ki_yaw;
+	pid_yaw.d = kd_yaw;
+	
+	pid_pit_spd.p = speed_p_kp;
+	pid_pit_spd.i = speed_p_ki;
+	pid_pit_spd.d = speed_p_kd;
+	
+	pid_yaw_spd.p = speed_y_kp;
+	pid_yaw_spd.i = speed_y_ki;
+	pid_yaw_spd.d = speed_y_kd;
+	#endif
+	/*---------------EricEditedEND---------------*/
+	
   pid_calc(&pid_yaw, gim.pid.yaw_angle_fdb, gim.pid.yaw_angle_ref);
   pid_calc(&pid_pit, gim.pid.pit_angle_fdb, gim.pid.pit_angle_ref);
   
@@ -488,7 +525,7 @@ void gimbal_param_init(void)
   
   /* pitch axis motor pid parameter */
   PID_struct_init(&pid_pit, POSITION_PID, 1000, 0,
-                  kp, ki, kd); //
+                  130, 1, 65); //
   PID_struct_init(&pid_pit_spd, POSITION_PID, 6000, 3000,
                   3.7, 0, 0);  //16
 
@@ -496,13 +533,13 @@ void gimbal_param_init(void)
   PID_struct_init(&pid_yaw, POSITION_PID, 1000, 0,
                   156.0, 1, 450.0); //
   PID_struct_init(&pid_yaw_spd, POSITION_PID, 6000, 3000,
-                  7.5 , 0, 0);  //30
+                  0 , 0, 0);  //30 //7.5
   
   /* bullet trigger motor pid parameter */
   PID_struct_init(&pid_trigger, POSITION_PID, 10000, 2000,
                   15, 0, 10);
   PID_struct_init(&pid_trigger_spd, POSITION_PID, 8000, 3000,
-                  1.5, 0.1, 5);
+                  0, 0, 0); //1.5 0.1 5
                   
   kalman_filter_init(&yaw_kalman_filter, &yaw_kalman_filter_para);
   kalman_filter_init(&pitch_kalman_filter, &pitch_kalman_filter_para);
