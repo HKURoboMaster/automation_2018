@@ -70,6 +70,9 @@ uint32_t gimbal_time_ms;
 
 
 /* for debug */
+int pid_yaw_out_js;
+int pid_pitch_out_js;
+
 int yaw_angle_fdb_js;
 int yaw_angle_ref_js;
 int yaw_speed_fdb_js;
@@ -81,21 +84,21 @@ int pit_speed_fdb_js;
 int pit_speed_ref_js;
 /*-------------EricEditedSTART----------------*/ //19.03.03
 #ifdef DEBUG_GIM_PID
-float kp_pit =130.0; //156.0, 1, 450.0
-float ki_pit = 0;
-float kd_pit = 205.2;
+float kp_pit = 170.0; //156.0, 1, 450.0
+float ki_pit = 3.5;
+float kd_pit = 100.0;
 
-float kp_yaw = 156.0;
-float ki_yaw = 1;
-float kd_yaw = 450.0;
+float kp_yaw = 1200.0;
+float ki_yaw = 15.0;
+float kd_yaw = 30.0;
 
-float speed_p_kp = 0; //3
+float speed_p_kp = 3; //3
 float speed_p_ki = 0;
-float speed_p_kd = 0; //3
+float speed_p_kd = 3; //3
 
-float speed_y_kp = 0; //3
+float speed_y_kp = 10; //3
 float speed_y_ki = 0;
-float speed_y_kd = 0; //1.2
+float speed_y_kd = 50; //1.2
 #endif
 /*--------------EricEditedEND--------------*/
 typedef struct  // speed_calc_data_t
@@ -227,6 +230,7 @@ void gimbal_task(void const *argu)
 
     case GIMBAL_RELATIVE_MODE:
       pc_relative_ctrl_handler();
+			
     break;
 
     default:
@@ -256,8 +260,12 @@ void gimbal_task(void const *argu)
   pid_calc(&pid_yaw, gim.pid.yaw_angle_fdb, gim.pid.yaw_angle_ref);
   pid_calc(&pid_pit, gim.pid.pit_angle_fdb, gim.pid.pit_angle_ref);
   
+	pid_yaw.out = pid_yaw.out * (-1); // reverse pid here
   gim.pid.yaw_spd_ref = pid_yaw.out;
+	//pid_yaw_out_js = pid_yaw.out*1000;
+	
   gim.pid.pit_spd_ref = pid_pit.out;
+	//pid_pitch_out_js = pid_pit.out*1000;
   
   gim.pid.yaw_spd_fdb = gim.sensor.yaw_palstance;
   gim.pid.pit_spd_fdb = gim.sensor.pit_palstance;
@@ -288,7 +296,7 @@ void gimbal_task(void const *argu)
   pit_angle_fdb_js = gim.pid.pit_angle_fdb*1000;
   pit_speed_ref_js = pid_pit.out*1000;
   pit_speed_fdb_js = gim.sensor.pit_palstance*1000;
-
+	
   osSignalSet(can_msg_send_task_t, GIMBAL_MOTOR_MSG_SEND);
   osSignalSet(shoot_task_t, SHOT_TASK_EXE_SIGNAL);
 
@@ -533,13 +541,13 @@ void gimbal_param_init(void)
   PID_struct_init(&pid_yaw, POSITION_PID, 1000, 0,
                   156.0, 1, 450.0); //
   PID_struct_init(&pid_yaw_spd, POSITION_PID, 6000, 3000,
-                  0 , 0, 0);  //30 //7.5
+                  30 , 0, 7.5);  //30 //7.5
   
   /* bullet trigger motor pid parameter */
   PID_struct_init(&pid_trigger, POSITION_PID, 10000, 2000,
                   15, 0, 10);
   PID_struct_init(&pid_trigger_spd, POSITION_PID, 8000, 3000,
-                  0, 0, 0); //1.5 0.1 5
+                  1.5, 0.1, 5); //1.5 0.1 5
                   
   kalman_filter_init(&yaw_kalman_filter, &yaw_kalman_filter_para);
   kalman_filter_init(&pitch_kalman_filter, &pitch_kalman_filter_para);
