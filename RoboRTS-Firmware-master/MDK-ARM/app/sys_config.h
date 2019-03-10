@@ -73,12 +73,12 @@
 #define PERIMETER              478
 
 /* wheel track distance(mm) */
-#define WHEELTRACK             415
+#define WHEELTRACK             445
 /* wheelbase distance(mm) */
-#define WHEELBASE              406
+#define WHEELBASE              345
 
 /* gimbal is relative to chassis center x axis offset(mm) */
-#define GIMBAL_X_OFFSET        130
+#define GIMBAL_X_OFFSET        0
 /* gimbal is relative to chassis center y axis offset(mm) */
 #define GIMBAL_Y_OFFSET        0
 
