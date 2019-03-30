@@ -88,21 +88,21 @@ int pit_speed_ref_js;
 
 /*-------------JerryEditedSTART----------------*/ //19.03.17
 gim_pid_debug_t debug_pit = {
-  170.0, \
-  3.5, \
-  100.0, \
-  3.0, \
+  -15, \
   0, \
-  3
+  -30, \
+  -25, \
+  -0.0015, \
+  30  //tested worked pid
 };
 
 gim_pid_debug_t debug_yaw = {
-  650.0, \
+  -20.0, \
   0.0, \
-  150.0, \
-  20, \
-  -8, \
-  35
+  0.0, \
+  -60, \
+  0, \
+  0
 };
 /*-------------JerryEditedEND----------------*/
 
@@ -217,7 +217,7 @@ void gimbal_task(void const *argu)
   gimbal_time_last = HAL_GetTick();
   
 //---------------------------------------------------
-  archive_index++;
+  archive_index++;  //This is a 2-D array that stores attitide information
   if (archive_index > 99) //system delay ms
     archive_index = 0;
   gimbal_attitude_archive[archive_index][0] = gim.sensor.yaw_gyro_angle;//gim.pid.yaw_angle_fdb;
@@ -272,6 +272,7 @@ void gimbal_task(void const *argu)
   pid_pit.p = debug_pit.kp;
 	pid_pit.i = debug_pit.ki;
 	pid_pit.d = debug_pit.kd;
+	 //test if it will die 
 	
 	pid_yaw.p = debug_yaw.kp;
 	pid_yaw.i = debug_yaw.ki;
