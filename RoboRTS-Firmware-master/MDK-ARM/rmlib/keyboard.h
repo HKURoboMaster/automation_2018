@@ -47,6 +47,9 @@
 #define KB_SINGLE_SHOOT     (km.lk_sta == KEY_PRESS_ONCE)
 #define KB_CONTINUE_SHOOT   (km.lk_sta == KEY_PRESS_LONG)
 #define KB_TRIG_FRIC_WHEEL  (rc.kb.bit.F)
+#define KB_HERO_FRAME_CONT	(rc.kb.bit.R)
+#define KB_HERO_FRAME_UP		(rc.kb.bit.X)
+#define KB_HERO_FRAME_DOWN	(rc.kb.bit.C)
 
 
 /**********************************************************************************
@@ -121,5 +124,5 @@ void keyboard_global_hook(void);
 void keyboard_chassis_hook(void);
 void keyboard_gimbal_hook(void);
 void keyboard_shoot_hook(void);
-
+void keyboard_hero_frame(void);
 #endif

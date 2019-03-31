@@ -113,10 +113,10 @@ void key_fsm(kb_state_e *sta, uint8_t key)
       
   }
 }
-extern uint8_t framework_raising_flag;
+extern hero_frame frame_ctrl;
 static void move_spd_ctrl(uint8_t fast, uint8_t slow)
 {
-  if (fast&& !framework_raising_flag)
+  if ((frame_ctrl.status==BOTTOM_STAY || frame_ctrl.status==OFF) && fast)
   {
 		/*In hero, once the framework is raised, high speed mode is prohibited*/
     km.move = FAST_MODE;
@@ -283,4 +283,52 @@ void keyboard_shoot_hook(void)
   kb_fric_ctrl(KB_TRIG_FRIC_WHEEL);
   //single or continuous trigger bullet control
   kb_shoot_cmd(KB_SINGLE_SHOOT, KB_CONTINUE_SHOOT);
+}
+void keyboard_hero_frame()
+{
+	/*signal[0][1] dealler*/
+	if(KB_HERO_FRAME_CONT)
+	{
+		if(frame_ctrl.status == BOTTOM_STAY)
+		{
+			frame_ctrl.signal[TOTOP] = 1;
+			frame_ctrl.signal[TOBOTTOM] = 0;
+		}
+		else
+		{
+			frame_ctrl.signal[TOBOTTOM] = 1;
+			frame_ctrl.signal[TOTOP] = 0;
+		}
+	}
+	else
+	{
+		frame_ctrl.signal[TOBOTTOM] = 0;
+		frame_ctrl.signal[TOTOP] = 0;
+	}
+	/*signal[2][3] dealler*/
+	if(KB_HERO_FRAME_DOWN)
+	{
+		frame_ctrl.signal[UP] = 0;
+		frame_ctrl.signal[DOWN] = 1;
+	}
+	else if(KB_HERO_FRAME_UP)
+	{
+		frame_ctrl.signal[UP] = 1;
+		frame_ctrl.signal[DOWN] = 0;
+	}
+	else
+	{
+		frame_ctrl.signal[DOWN] = 0;
+		frame_ctrl.signal[UP] = 0;
+	}
+	/*Make the signal[0][1]: mutually exclusive*/
+	/*Make the signal[2][3]: mutually exclusive*/
+	if(frame_ctrl.signal[UP] && frame_ctrl.signal[DOWN])
+	{
+		frame_ctrl.signal[UP] = 0;
+	}
+	if(frame_ctrl.signal[TOTOP] && frame_ctrl.signal[TOBOTTOM])
+	{
+		frame_ctrl.signal[TOTOP] = 0;
+	}
 }

@@ -514,25 +514,114 @@ void get_dma_memory_msg(DMA_Stream_TypeDef *dma_stream, uint8_t *mem_id, uint16_
   *remain_cnt = dma_current_data_counter(dma_stream);
 }
 extern hero_frame frame_ctrl;
+int16_t count_time = 0;
 void get_frame_info(void)
 {
+	frame_ctrl.status = OFF; //comment it for hero
+	/*Step-1: get info from RC*/
+	remote_ctrl_hero_frame();
+	if(km.kb_enable)
+		keyboard_hero_frame();
+	/*Step-2: state transfer*/
 	switch(frame_ctrl.status)
 	{
 		case OFF:
 			break;
 		case BOTTOM_STAY:
+		{
+			if(frame_ctrl.signal[TOTOP])
+				frame_ctrl.status = CONTIN_UP;
+			else if(frame_ctrl.signal[UP])
+				frame_ctrl.status = ONCE_UP;
 			break;
+		}
 		case NON_BOTTOM_STAY:
+		{
+			if(frame_ctrl.signal[TOBOTTOM])
+				frame_ctrl.status = CONTIN_DOWN;
+			else if(frame_ctrl.signal[DOWN])
+				frame_ctrl.status = ONCE_DOWN;
 			break;
+		}
+		/* Contin_Up state:
+		 * if TOBOTTOM or DOWN: nonbottom stay
+		 * else if less than 3000 counts, unchanged
+		 * else: nonbottom stay
+		 */
 		case CONTIN_UP:
+		{
+			if(frame_ctrl.signal[TOBOTTOM] || frame_ctrl.signal[DOWN] || count_time>=3000)
+			{
+				frame_ctrl.status = NON_BOTTOM_STAY;
+				count_time=0;
+			}
+			else
+			{
+				count_time++;
+			}
 			break;
+		}
+		/* Contin_Down state:
+		 * if less than 3000 counts, unchanged
+		 * else: bottom stay
+		 */
 		case CONTIN_DOWN:
+		{
+			if(count_time < 3000)
+				count_time++;
+			else
+			{
+				count_time = 0;
+				frame_ctrl.status = BOTTOM_STAY;
+			}
 			break;
+		}
+		/* Once_Up state:
+		 * if Up: unchanged
+		 * else if TOTOP: CONTIN_UP
+		 * else: nonbottom stay
+		 */
 		case ONCE_UP:
+		{
+			if(frame_ctrl.signal[UP])
+			{}
+			else if(frame_ctrl.signal[TOTOP])
+			{
+				frame_ctrl.status = CONTIN_UP;
+			}
+			else
+			{
+				frame_ctrl.status = NON_BOTTOM_STAY;
+			}
 			break;
+		}
+		/* Once_Down state:
+		 * if Down: unchanged
+		 * else if TOBOTTOM: CONTIN_DOWN
+		 * else: nonbottom stay
+		 */
 		case ONCE_DOWN:
+		{
+			if(frame_ctrl.signal[DOWN])
+			{}
+			else if(frame_ctrl.signal[TOBOTTOM])
+			{
+				frame_ctrl.status = CONTIN_DOWN;
+			}
+			else
+			{
+				frame_ctrl.status = NON_BOTTOM_STAY;
+			}
 			break;
+		}
 		default:
 			break;
 	}
+	/*Step-3: generate the output*/
+	if(frame_ctrl.status==CONTIN_UP || frame_ctrl.status==UP)
+		frame_ctrl.output = 1;
+	else if(frame_ctrl.status==CONTIN_DOWN || frame_ctrl.status==DOWN)
+		frame_ctrl.output = -1;
+	else
+		frame_ctrl.output = 0;
 }

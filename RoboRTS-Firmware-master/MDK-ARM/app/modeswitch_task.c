@@ -82,7 +82,7 @@ void mode_switch_task(void const *argu)
 
 static void kb_enable_hook(void) //鼠标键盘控制还是遥控器控制。
 {
-  if (rc.sw1 == RC_MI && rc.sw2 == RC_UP)
+  if (rc.sw2 == RC_UP)
     km.kb_enable = 1;
   else
     km.kb_enable = 0;

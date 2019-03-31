@@ -161,4 +161,14 @@ void remote_ctrl_hero_frame(void)
 			frame_ctrl.signal[TOTOP] = 0;
 		}
 	}
+	else
+	{
+		frame_ctrl.signal[TOBOTTOM] = 0;
+		frame_ctrl.signal[TOTOP] = 0;
+	}
+	/*Make the signal[2][3]: mutually exclusive*/
+	if(frame_ctrl.signal[TOTOP] && frame_ctrl.signal[TOBOTTOM])
+	{
+		frame_ctrl.signal[TOTOP] = 0;
+	}
 }
