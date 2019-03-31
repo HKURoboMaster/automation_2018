@@ -45,6 +45,8 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff)
   rc->ch3 -= 1024;
   rc->ch4 = (buff[4] >> 1 | buff[5] << 7) & 0x07FF;
   rc->ch4 -= 1024;
+	rc->ch7  = (buff[16] >> 4 | buff[17]<< 4) & 0x07FF;
+	rc->ch7 -= 1024;
   
   /* prevent remote control zero deviation */
   if(rc->ch1 <= 5 && rc->ch1 >= -5)

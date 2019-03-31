@@ -334,14 +334,14 @@ static void chassis_mode_handler(void)
         
         case RC_MI:
         {
-          chassis.ctrl_mode = DODGE_MODE;//MANUAL_SEPARATE_GIMBAL;
+					chassis.ctrl_mode = MANUAL_SEPARATE_GIMBAL;
+          //chassis.follow_gimbal = 1;
+          //chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
         }break;
         
         case RC_DN:
         {
-          chassis.ctrl_mode = MANUAL_SEPARATE_GIMBAL;
-          //chassis.follow_gimbal = 1;
-          //chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
+          chassis.ctrl_mode = DODGE_MODE;//MANUAL_SEPARATE_GIMBAL;
         }break;
         
       }

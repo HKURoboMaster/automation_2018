@@ -27,10 +27,10 @@
 /*************************chassis setting*******************************/
 /* remote mode chassis move speed limit */
 /* left and right speed (mm/s) */
-#define CHASSIS_RC_MAX_SPEED_X  2700.0f
+#define CHASSIS_RC_MAX_SPEED_X  2200.0f
 #define CHASSIS_RC_MOVE_RATIO_X 1.0f
 /* back and forward speed (mm/s) */
-#define CHASSIS_RC_MAX_SPEED_Y  2700.0f
+#define CHASSIS_RC_MAX_SPEED_Y  2200.0f
 #define CHASSIS_RC_MOVE_RATIO_Y 1.0f
 /* chassis rotation speed (deg/s) */
 /* used only chassis open loop mode */
@@ -39,10 +39,10 @@
 
 /* keyboard mode speed limit */
 /* left and right speed (mm/s) */
-#define CHASSIS_KB_MAX_SPEED_X  3300.0f 
+#define CHASSIS_KB_MAX_SPEED_X  3000.0f 
 #define CHASSIS_KB_MOVE_RATIO_X 1.0f
 /* back and forward speed (mm/s) */
-#define CHASSIS_KB_MAX_SPEED_Y  3300.0f
+#define CHASSIS_KB_MAX_SPEED_Y  3000.0f
 #define CHASSIS_KB_MOVE_RATIO_Y 1.0f
 
 /**************************gimbal setting*******************************/
@@ -151,10 +151,10 @@
 #define COMPUTER_HUART     huart6 //connected to manifold/TXone
 
 /* gimbal relevant */
-#define PIT_ANGLE_MAX      16
-#define PIT_ANGLE_MIN      -14
-#define YAW_ANGLE_MAX      50
-#define YAW_ANGLE_MIN      -50
+#define PIT_ANGLE_MAX      20
+#define PIT_ANGLE_MIN      -20
+#define YAW_ANGLE_MAX      180
+#define YAW_ANGLE_MIN      -180
 
 /* detect task relevant */
 #define DEFAULT_TUNE       300
