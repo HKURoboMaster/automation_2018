@@ -113,11 +113,12 @@ void key_fsm(kb_state_e *sta, uint8_t key)
       
   }
 }
-
+extern uint8_t framework_raising_flag;
 static void move_spd_ctrl(uint8_t fast, uint8_t slow)
 {
-  if (fast)
+  if (fast&& !framework_raising_flag)
   {
+		/*In hero, once the framework is raised, high speed mode is prohibited*/
     km.move = FAST_MODE;
     km.x_spd_limit = CHASSIS_KB_MAX_SPEED_X;
     km.y_spd_limit = CHASSIS_KB_MAX_SPEED_Y;

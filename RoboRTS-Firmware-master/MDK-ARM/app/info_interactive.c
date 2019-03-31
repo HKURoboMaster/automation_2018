@@ -513,3 +513,26 @@ void get_dma_memory_msg(DMA_Stream_TypeDef *dma_stream, uint8_t *mem_id, uint16_
   *mem_id     = dma_current_memory_target(dma_stream);
   *remain_cnt = dma_current_data_counter(dma_stream);
 }
+extern hero_frame frame_ctrl;
+void get_frame_info(void)
+{
+	switch(frame_ctrl.status)
+	{
+		case OFF:
+			break;
+		case BOTTOM_STAY:
+			break;
+		case NON_BOTTOM_STAY:
+			break;
+		case CONTIN_UP:
+			break;
+		case CONTIN_DOWN:
+			break;
+		case ONCE_UP:
+			break;
+		case ONCE_DOWN:
+			break;
+		default:
+			break;
+	}
+}

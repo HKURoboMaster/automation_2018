@@ -124,8 +124,8 @@
 /* the positive direction of tirgger motor */
 #define TRI_MOTO_POSITIVE_DIR  1.0f
 
-
-
+/***********************hero framework**************************************/
+#define HERO_FRAME_SPEED			200
 
 /***********************system interface setting****************************/
 

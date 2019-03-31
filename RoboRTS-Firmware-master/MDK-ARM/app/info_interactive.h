@@ -33,6 +33,7 @@ int16_t get_relative_pos(int16_t raw_ecd, int16_t center_offset);
 
 void get_gimbal_info(void);
 void get_shoot_info(void);
+void get_frame_info(void);
 void send_gimbal_motor_ctrl_message(int16_t gimbal_cur[]);
 
 void get_chassis_info(void);
