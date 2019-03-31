@@ -88,12 +88,12 @@ int pit_speed_ref_js;
 
 /*-------------JerryEditedSTART----------------*/ //19.03.17
 gim_pid_debug_t debug_pit = {
-  -15, \
+  -20, \
   0, \
   -30, \
-  -25, \
+  -20, \
   -0.0015, \
-  30  //tested worked pid
+  40  //tested worked pid
 };
 
 gim_pid_debug_t debug_yaw = {
@@ -104,6 +104,8 @@ gim_pid_debug_t debug_yaw = {
   0, \
   0
 };
+
+low_pass_t debug_lowpass = {0.4,0.4,0.2};
 /*-------------JerryEditedEND----------------*/
 
 #ifdef DEBUG_GIM_PID
@@ -126,7 +128,9 @@ float speed_y_kp = debug_yaw.speed_kp; //3
 float speed_y_ki = debug_yaw.speed_ki;
 float speed_y_kd = debug_yaw.speed_kd; //1.2
 */
-
+float previous;
+float previous2;
+int checker = 0 ;
 #endif
 /*--------------EricEditedEND--------------*/
 typedef struct  // speed_calc_data_t
@@ -300,8 +304,20 @@ void gimbal_task(void const *argu)
 	pid_pitch_out_js = pid_pit.out*1000;
   
   gim.pid.yaw_spd_fdb = gim.sensor.yaw_palstance;
-  gim.pid.pit_spd_fdb = gim.sensor.pit_palstance;
   
+	if (checker == 0 )
+	{
+		checker = 1;
+		previous = gim.sensor.pit_palstance;
+		previous2  = previous;
+	}
+	else
+	{
+		previous2 = previous;
+		previous = gim.pid.pit_spd_fdb;
+	
+	}
+  gim.pid.pit_spd_fdb = gim.sensor.pit_palstance*debug_lowpass.p0+debug_lowpass.p1*previous + debug_lowpass.p2*previous2;
   pid_calc(&pid_yaw_spd, gim.pid.yaw_spd_fdb, gim.pid.yaw_spd_ref);
   pid_calc(&pid_pit_spd, gim.pid.pit_spd_fdb, gim.pid.pit_spd_ref);
 	pid_yaw_final_out_js = pid_yaw_spd.out * 1000;
