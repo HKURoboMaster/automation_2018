@@ -61,6 +61,14 @@ typedef __packed struct
   uint16_t     shoot_bullets;
   uint16_t     remain_bullets;
 } shoot_t;
+//Eric Edited 
+typedef __packed struct
+{
+	uint8_t funct;
+	uint16_t servo_debug;
+} maga_t;
+	
+
 
 typedef __packed struct
 {
@@ -90,6 +98,7 @@ static void shoot_bullet_handler(void);
 static void fric_wheel_ctrl(void);
 
 extern shoot_t   shoot;
+extern maga_t maga;
 extern trigger_t trig;
 
 #endif

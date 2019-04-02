@@ -27,7 +27,7 @@
 #include "bsp_io.h"
 #include "sys_config.h"
 #include "tim.h"
-
+int portion = 100;
 void turn_on_laser(void)
 {
   HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, GPIO_PIN_SET);
@@ -55,6 +55,16 @@ void turn_off_friction_wheel(void)
   LEFT_FRICTION  = 1000;
   RIGHT_FIRCTION = 1000;
 }
+//Eric edited
+void turn_on_magalid(uint16_t servo_debug)
+{
+	MAGA_SERVO = 60;
+}
+
+void turn_off_magalid()
+{
+	MAGA_SERVO = 202;
+}	
 
 void beep_ctrl(uint16_t tune, uint16_t ctrl)
 {
@@ -73,6 +83,7 @@ void pwm_device_init(void)
   HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1); // beep
   HAL_TIM_PWM_Start(&htim1,  TIM_CHANNEL_1); // friction wheel
   HAL_TIM_PWM_Start(&htim1,  TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start(&htim4,	 TIM_CHANNEL_1);
 }
 
 uint8_t sd_insert(void)

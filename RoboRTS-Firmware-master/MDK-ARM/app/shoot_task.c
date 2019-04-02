@@ -53,6 +53,9 @@ UBaseType_t shoot_stack_surplus;
 /* shoot task global parameter */
 shoot_t   shoot;
 trigger_t trig;
+maga_t maga={0,41};
+
+
 
 uint32_t shoot_time_last;
 int shoot_time_ms;
@@ -176,6 +179,14 @@ static void fric_wheel_ctrl(void)
     turn_off_friction_wheel();
     turn_off_laser();
   }
+	if  (maga.funct)
+	{
+		turn_on_magalid(maga.servo_debug);
+	}
+	else
+	{
+		turn_off_magalid();
+	}
 }
 
 

@@ -187,6 +187,15 @@ static void kb_fric_ctrl(uint8_t open_fric,  uint8_t close_fric)
   if (close_fric)
     shoot.fric_wheel_run = 0;
 }
+//Eric Edited
+static void kb_magalid_ctrl(uint8_t open_maga, uint8_t close_maga)
+{
+	if(open_maga)
+		maga.funct = 1;
+	if(close_maga)
+		maga.funct = 0;
+}
+
 
 static void kb_shoot_cmd(uint8_t single_fir, uint8_t cont_fir)
 {
@@ -273,6 +282,12 @@ void keyboard_gimbal_hook(void)
     km.buff_ctrl = 0;
     km.track_ctrl = 0;
   }
+}
+
+void keyborad_maga_hook(void)
+{
+	kb_magalid_ctrl( KB_TURN_ON_MAGALID , KB_TURN_OFF_MAGALID);
+	
 }
 
 void keyboard_shoot_hook(void)

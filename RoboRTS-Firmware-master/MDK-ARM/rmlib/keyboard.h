@@ -48,7 +48,9 @@
 #define KB_CONTINUE_SHOOT   (km.lk_sta == KEY_PRESS_LONG)
 #define KB_OPEN_FRIC_WHEEL  (rc.kb.bit.Q)
 #define KB_CLOSE_FIRC_WHEEL (rc.kb.bit.Q && rc.kb.bit.SHIFT)
-
+//Eric Edited
+#define KB_TURN_ON_MAGALID	(rc.kb.bit.G)
+#define KB_TURN_OFF_MAGALID	(rc.kb.bit.G && rc.kb.bit.SHIFT)
 /**********************************************************************************
  * bit      :15   14   13   12   11   10   9   8   7   6     5     4   3   2   1
  * keyboard : V    C    X	  Z    G    F    R   E   Q  CTRL  SHIFT  D   A   S   W
@@ -121,5 +123,7 @@ void keyboard_global_hook(void);
 void keyboard_chassis_hook(void);
 void keyboard_gimbal_hook(void);
 void keyboard_shoot_hook(void);
+void keyborad_maga_hook(void);
+ 
 
 #endif
