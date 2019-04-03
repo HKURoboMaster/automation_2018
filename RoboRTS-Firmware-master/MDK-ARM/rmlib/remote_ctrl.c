@@ -172,3 +172,14 @@ void remote_ctrl_hero_frame(void)
 		frame_ctrl.signal[TOTOP] = 0;
 	}
 }
+
+static void rm_magalid_ctrl(uint8_t open_mega)
+{
+	if(open_mega)
+		maga.funct = maga.funct?0:1;
+}
+
+void remote_maga_hook(void)
+{
+	rm_magalid_ctrl(RM_TURN_ON_MAGALID);
+}

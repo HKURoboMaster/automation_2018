@@ -72,11 +72,12 @@ typedef struct
 
 /* control operation definition */
 //      shoot relevant      remote control operation
-#define RC_SINGLE_SHOOT    ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
-//#define RC_SINGLE_SHOOT    ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 > WH_UP_THRESHOLD))
-#define RC_CONTINUE_SHOOT  (rc.sw1 == RC_DN)
-//#define RC_CONTINUE_SHOOT  ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 < WH_DN_THRESHOLD))
+//#define RC_SINGLE_SHOOT    ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
+#define RC_SINGLE_SHOOT    ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 > WH_UP_THRESHOLD))
+//#define RC_CONTINUE_SHOOT  (rc.sw1 == RC_DN)
+#define RC_CONTINUE_SHOOT  ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 < WH_DN_THRESHOLD))
 #define RC_CTRL_FRIC_WHEEL ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_UP))
+#define RM_TURN_ON_MAGALID ((glb_sw.last_sw1 == RC_MI) && (rc.sw2 == RC_DN))
 
 typedef struct
 {
@@ -84,7 +85,7 @@ typedef struct
   uint8_t last_sw2;
   uint32_t stable_time_sw1;
   uint32_t stable_time_sw2;
-	uint8_t last_wh;
+	int16_t last_wh;
 	uint32_t stable_time_wh;
 } sw_record_t;
 
@@ -114,6 +115,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff);
 
 void remote_ctrl_chassis_hook(void);
 void remote_ctrl_gimbal_hook(void);
+void remote_maga_hook(void);
 void remote_ctrl_shoot_hook(void);
 void remote_ctrl_hero_frame(void);
 
