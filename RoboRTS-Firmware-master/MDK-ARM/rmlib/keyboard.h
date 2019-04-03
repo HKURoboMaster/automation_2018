@@ -50,6 +50,9 @@
 #define KB_HERO_FRAME_CONT	(rc.kb.bit.R)
 #define KB_HERO_FRAME_UP		(rc.kb.bit.X)
 #define KB_HERO_FRAME_DOWN	(rc.kb.bit.C)
+//Eric Edited 
+//@Apr 4, 2019 modified by Y H Liu
+#define KB_TURN_ON_MAGALID	(rc.kb.bit.R)
 
 
 /**********************************************************************************
@@ -125,4 +128,6 @@ void keyboard_chassis_hook(void);
 void keyboard_gimbal_hook(void);
 void keyboard_shoot_hook(void);
 void keyboard_hero_frame(void);
+void keyboard_maga_hook(void);
+
 #endif

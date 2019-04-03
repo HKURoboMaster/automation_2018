@@ -36,7 +36,8 @@
 
 #define BEEP_TUNE        TIM12->ARR
 #define BEEP_CTRL        TIM12->CCR1
-  
+#define MAGA_SERVO			 TIM4->CCR1
+
   
 void turn_on_laser(void);
 void turn_off_laser(void);
@@ -45,6 +46,8 @@ void turn_off_friction_wheel(void);
 void beep_ctrl(uint16_t tune, uint16_t ctrl);
 void pwm_device_init(void);
 void mpu_heat_ctrl(uint16_t pwm_pulse);
+void turn_on_magalid(uint16_t servo_debug);
+void turn_off_magalid(void);
 
 uint8_t get_trigger_key_state(void);
 uint8_t sd_insert(void);

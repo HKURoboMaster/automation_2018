@@ -53,6 +53,8 @@ UBaseType_t shoot_stack_surplus;
 /* shoot task global parameter */
 shoot_t   shoot;
 trigger_t trig;
+maga_t maga = {0,41};
+
 
 uint32_t shoot_time_last;
 int shoot_time_ms;
@@ -164,6 +166,9 @@ void block_bullet_handler(void)
   }
 }
 
+//Eric Edited
+//Modified by Y H Liu @Apr 3rd, 2019
+//not only for the friction wheels but magazine lid as well. Both are using PWM
 static void fric_wheel_ctrl(void)
 {
   if (shoot.fric_wheel_run)
@@ -176,6 +181,15 @@ static void fric_wheel_ctrl(void)
     turn_off_friction_wheel();
     turn_off_laser();
   }
+	//For magazine lid control
+	if(maga.funct)
+	{
+		turn_on_magalid(maga.servo_debug);
+	}
+	else
+	{
+		turn_off_magalid();
+	}
 }
 
 

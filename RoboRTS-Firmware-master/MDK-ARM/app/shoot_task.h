@@ -62,6 +62,13 @@ typedef __packed struct
   uint16_t     remain_bullets;
 } shoot_t;
 
+//Eric Edited
+typedef __packed struct
+{
+	uint8_t funct;
+	uint16_t servo_debug;
+}maga_t;
+
 typedef __packed struct
 {
   /* trigger motor param */
@@ -91,5 +98,6 @@ static void fric_wheel_ctrl(void);
 
 extern shoot_t   shoot;
 extern trigger_t trig;
+extern maga_t maga;
 
 #endif

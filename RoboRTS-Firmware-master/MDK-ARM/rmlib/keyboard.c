@@ -277,6 +277,17 @@ void keyboard_gimbal_hook(void)
   }
 }
 
+static void kb_magalid_ctrl(uint8_t open_mega)
+{
+	if(open_mega)
+		maga.funct = maga.funct?0:1;
+}
+
+void keyboard_maga_hook(void)
+{
+	kb_magalid_ctrl(KB_TURN_ON_MAGALID);
+}
+
 void keyboard_shoot_hook(void)
 {
   //friction wheel control

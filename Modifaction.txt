@@ -40,15 +40,20 @@ Instance of hero_frame:
 Part a-1 receiving from rc: 
 This will get the info from the dbus and store it into the structure:
 hero_frame
-The 4 signals (an array) is updated.
+The last two signals (an array) is updated, i.e. TOTOP and TOBOTTOM
 function name: remote_ctrl_hero_frame()
 Defined in remote_ctrl.c, line 149
 Declared in remote_ctrl.h. line 118
-Called in info_interactive.c
+Called in info_interactive.c: get_frame_info()
 
 Part a-2 receiving from keyboard:
 This will get the info from the debus[keyboard_field] and store it into the
-structre is the mouse_key control is in used.
+structre is the mouse_key control is in used
+The 4 signals (the array) is updated.
+function name: keyboard_hero_frame()
+Defined in keyboard.c, line 287
+Declared in keyboard.h, line 127
+Called in info_interactive.c: get_frame_info()
 
 Part b interactive:
 This will call the receiving part and then conduct the state tranfer, so that
