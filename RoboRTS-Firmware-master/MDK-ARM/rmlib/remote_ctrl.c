@@ -96,7 +96,7 @@ static void chassis_operation_func(int16_t forward_back, int16_t left_right, int
 
 void remote_ctrl_chassis_hook(void)
 {
-  chassis_operation_func(rc.ch2, rc.ch1, rc.ch3);
+  chassis_operation_func(rc.ch4, rc.ch3, rc.ch1);
 }
 
 static void gimbal_operation_func(int16_t pit_ctrl, int16_t yaw_ctrl)
@@ -108,7 +108,7 @@ static void gimbal_operation_func(int16_t pit_ctrl, int16_t yaw_ctrl)
 
 void remote_ctrl_gimbal_hook(void)
 {
-  gimbal_operation_func(rc.ch4, rc.ch3);
+  gimbal_operation_func(rc.ch2, rc.ch1);
 }
 
 
