@@ -67,4 +67,11 @@ Called in info_get_task.c
 Part c Updating:
 Call the function get_frame_info() so that the output is generated, updated
 and ready for furture usage. 
-The get_frame_info() is called in info_get_task.c, line 64. 
+The get_frame_info() is called in info_get_task.c, line 64.
+
+
+Before put the hero in use: 
+1. adjust the system configuration
+2. decomment the calling of get_frame_info() in info_get_task.c
+3. decomment the first line in the get_frame_info()
+4. comment the control parts for the magazine lid. 

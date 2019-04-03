@@ -117,8 +117,8 @@ void get_shoot_info(void)
       shoot.fric_wheel_spd = speed_debug;//DEFAULT_FRIC_WHEEL_SPEED;
       remote_ctrl_shoot_hook();
       keyboard_shoot_hook();
-			remote_maga_hook();
 			keyboard_maga_hook();
+			remote_maga_hook();
     }break;
     
     case SEMIAUTO_CTRL_SHOT:
