@@ -111,7 +111,7 @@ void shoot_task(void const *argu)
         */
 #else
         
-        trig.key = get_trigger_key_state();
+        trig.key = get_trigger_key_state_bypass();
         
         if (shoot.fric_wheel_run)
         {
@@ -132,6 +132,35 @@ void shoot_task(void const *argu)
 }
 
 
+
+/**
+  * This function is to replace the get_trigger_key_state when the bullet_shot_detector is not fixed;
+  * return either 0 or 1
+	* return 1 if the bullet is sending into the chamber
+	* return 0 otherwise
+*/
+int32_t trigger_motor_rotation = 0;
+int32_t trigger_motor_rot_last = 0;
+uint8_t get_trigger_key_state_bypass(void)
+{
+	trigger_motor_rot_last = trigger_motor_rotation;
+	trigger_motor_rotation += moto_trigger.total_angle/36;
+	trigger_motor_rotation %= 360;
+	int32_t bullet_passing_offset  = trigger_motor_rotation % 45;//45 = 360/8
+	if(bullet_passing_offset>=15 && bullet_passing_offset<30 && trigger_motor_rot_last != trigger_motor_rotation)
+		/*bullet_passing_offset in between 15 and 30
+			and the trigger motor is rotating now. 
+		*/
+		return 1;
+	else
+		return 0;
+}
+/*
+ * This function deals with the situation when the trigger motor is blocked. 
+ * When the output of trigger motor pid (i.e. the currency) is too high for 0.25s
+ * which illustrates the motor is blocked or rotating too slow
+ * the trigger motor will rotate backward for 0.25s. 
+*/
 void block_bullet_handler(void)
 {
   static uint32_t stall_count = 0;

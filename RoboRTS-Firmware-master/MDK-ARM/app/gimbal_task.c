@@ -499,6 +499,10 @@ void pc_relative_ctrl_handler(void)
       (gim.sensor.yaw_relative_angle <= YAW_ANGLE_MAX+35))
   {
     gim.pid.yaw_angle_ref = yaw_kf_result[0];// + yaw_kf_result[1]*(0.10f + dist_kf_result[0]/18000);
+		/*for testing whether the kalman filter has any issue*/
+		/*Added by Y. H. Liu @Apr 4, 2019*/
+		//gim.pid.yaw_angle_ref = yaw_angle_raw;
+		/*Switching back: decomment line 501 and comment line 504*/
   }
   chassis_angle_tmp = gim.sensor.yaw_gyro_angle - gim.sensor.yaw_relative_angle;
   VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);

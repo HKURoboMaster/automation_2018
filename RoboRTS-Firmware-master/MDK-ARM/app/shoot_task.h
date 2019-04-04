@@ -95,6 +95,7 @@ void shoot_task(void const *argu);
 
 static void shoot_bullet_handler(void);
 static void fric_wheel_ctrl(void);
+uint8_t get_trigger_key_state_bypass(void);
 
 extern shoot_t   shoot;
 extern trigger_t trig;
