@@ -36,6 +36,8 @@
 #define BACK       (rc.kb.bit.S)
 #define LEFT       (rc.kb.bit.A)
 #define RIGHT      (rc.kb.bit.D)
+#define CW				 (rc.kb.bit.E)
+#define CCW				 (rc.kb.bit.Q)
 //      speed      key
 #define FAST_SPD   (rc.kb.bit.SHIFT)
 #define SLOW_SPD   (rc.kb.bit.CTRL)
