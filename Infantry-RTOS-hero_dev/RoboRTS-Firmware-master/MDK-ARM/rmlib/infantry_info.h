@@ -181,6 +181,8 @@ typedef __packed struct
   int16_t ch2;
   int16_t ch3;
   int16_t ch4;
+	/* control wheel information */
+	int16_t ch7;
   /* left and right lever information */
   uint8_t sw1;
   uint8_t sw2;

@@ -145,6 +145,19 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
   HAL_GPIO_WritePin(GPIOH, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_SET);
 
+	/* Configure linear acutators */
+  HAL_GPIO_WritePin(GPIOH, LA_OUTPUT1_Pin|LA_OUTPUT_HIGH_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LA_OUTPUT2_GPIO_Port, LA_OUTPUT2_Pin, GPIO_PIN_RESET);
+	GPIO_InitStruct.Pin = LA_OUTPUT1_Pin|LA_OUTPUT2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = LA_OUTPUT_HIGH_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(LA_OUTPUT_HIGH_GPIO_Port, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 2 */

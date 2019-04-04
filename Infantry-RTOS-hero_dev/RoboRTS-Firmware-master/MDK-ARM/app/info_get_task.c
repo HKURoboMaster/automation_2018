@@ -61,7 +61,8 @@ void info_get_task(void const *argu)
         get_chassis_info();
         get_gimbal_info();
         get_shoot_info();
-        
+        //get_frame_info();
+				//de-comment it for hero;
         get_global_last_info();
         
         taskEXIT_CRITICAL();
@@ -100,7 +101,6 @@ static void get_global_last_info(void)
 {
   glb_sw.last_sw1 = rc.sw1;
   glb_sw.last_sw2 = rc.sw2;
-  
-  
+  glb_sw.last_wh  = rc.ch7;
 }
 

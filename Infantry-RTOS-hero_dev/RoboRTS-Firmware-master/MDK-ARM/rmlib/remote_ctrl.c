@@ -28,6 +28,10 @@
 #include "sys_config.h"
 #include "stdlib.h"
 #include "string.h"
+#include "gpio.h"
+
+/*control struct for the frame of hero*/
+hero_frame frame_ctrl;
 
 sw_record_t glb_sw;
 rc_info_t   rc;
@@ -45,6 +49,8 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff)
   rc->ch3 -= 1024;
   rc->ch4 = (buff[4] >> 1 | buff[5] << 7) & 0x07FF;
   rc->ch4 -= 1024;
+	rc->ch7  = (buff[16] >> 4 | buff[17]<< 4) & 0x07FF;
+	rc->ch7 -= 1024;
   
   /* prevent remote control zero deviation */
   if(rc->ch1 <= 5 && rc->ch1 >= -5)
@@ -55,6 +61,8 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff)
     rc->ch3 = 0;
   if(rc->ch4 <= 5 && rc->ch4 >= -5)
     rc->ch4 = 0;
+	if(rc->ch7 <= 5 && rc->ch7 >= -5)
+		rc->ch7 = 0;
   
   rc->sw1 = ((buff[5] >> 4) & 0x000C) >> 2;
   rc->sw2 = (buff[5] >> 4) & 0x0003;
@@ -84,6 +92,7 @@ static void chassis_operation_func(int16_t forward_back, int16_t left_right, int
   rm.vx =  forward_back / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_X;
   rm.vy = -left_right / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_Y;
   rm.vw = -rotate / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_R;
+	rm.vz = frame_ctrl.output * HERO_FRAME_SPEED;
 }
 
 void remote_ctrl_chassis_hook(void)
@@ -136,4 +145,37 @@ void remote_ctrl_shoot_hook(void)
   rc_fric_ctrl(RC_CTRL_FRIC_WHEEL);
   //single or continuous trigger bullet control
   rc_shoot_cmd(RC_SINGLE_SHOOT, RC_CONTINUE_SHOOT);
+}
+
+void remote_ctrl_hero_frame(void)
+{
+	if(glb_sw.last_sw1 == RC_MI && rc.sw1 == RC_DN)
+	{
+		if(frame_ctrl.status == BOTTOM_STAY)
+		{
+			frame_ctrl.signal[TOTOP] = 1;
+			frame_ctrl.signal[TOBOTTOM] = 0;
+			HAL_GPIO_WritePin(GPIOH, LA_OUTPUT1_Pin, 1);
+			HAL_GPIO_WritePin(LA_OUTPUT2_GPIO_Port, LA_OUTPUT2_Pin, 0);
+		}
+		else
+		{
+			frame_ctrl.signal[TOBOTTOM] = 1;
+			frame_ctrl.signal[TOTOP] = 0;
+			HAL_GPIO_WritePin(GPIOH, LA_OUTPUT1_Pin, 0);
+			HAL_GPIO_WritePin(LA_OUTPUT2_GPIO_Port, LA_OUTPUT2_Pin, 1);
+		}
+	}
+	else
+	{
+		frame_ctrl.signal[TOBOTTOM] = 0;
+		frame_ctrl.signal[TOTOP] = 0;
+		HAL_GPIO_WritePin(GPIOH, LA_OUTPUT1_Pin, 0);
+		HAL_GPIO_WritePin(LA_OUTPUT2_GPIO_Port, LA_OUTPUT2_Pin, 0);
+	}
+	/*Make the signal[2][3]: mutually exclusive*/
+	if(frame_ctrl.signal[TOTOP] && frame_ctrl.signal[TOBOTTOM])
+	{
+		frame_ctrl.signal[TOTOP] = 0;
+	}
 }

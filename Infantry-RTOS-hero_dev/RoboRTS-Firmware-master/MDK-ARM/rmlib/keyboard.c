@@ -113,11 +113,12 @@ void key_fsm(kb_state_e *sta, uint8_t key)
       
   }
 }
-
+extern hero_frame frame_ctrl;
 static void move_spd_ctrl(uint8_t fast, uint8_t slow)
 {
-  if (fast)
+  if ((frame_ctrl.status==BOTTOM_STAY || frame_ctrl.status==OFF) && fast)
   {
+		/*In hero, once the framework is raised, high speed mode is prohibited*/
     km.move = FAST_MODE;
     km.x_spd_limit = CHASSIS_KB_MAX_SPEED_X;
     km.y_spd_limit = CHASSIS_KB_MAX_SPEED_Y;
@@ -125,14 +126,14 @@ static void move_spd_ctrl(uint8_t fast, uint8_t slow)
   else if (slow)
   {
     km.move = SLOW_MODE;
-    km.x_spd_limit = 0.7f * CHASSIS_KB_MAX_SPEED_X;
-    km.y_spd_limit = 0.7f * CHASSIS_KB_MAX_SPEED_Y;
+    km.x_spd_limit = 0.5f * CHASSIS_KB_MAX_SPEED_X;
+    km.y_spd_limit = 0.5f * CHASSIS_KB_MAX_SPEED_Y;
   }
   else
   {
     km.move = NORMAL_MODE;
-    km.x_spd_limit = 0.85f * CHASSIS_KB_MAX_SPEED_X;
-    km.y_spd_limit = 0.85f * CHASSIS_KB_MAX_SPEED_Y;
+    km.x_spd_limit = 0.7f * CHASSIS_KB_MAX_SPEED_X;
+    km.y_spd_limit = 0.7f * CHASSIS_KB_MAX_SPEED_Y;
   }
 }
 
@@ -168,24 +169,25 @@ static void move_direction_ctrl(uint8_t forward, uint8_t back,
     ramp_init(&lr_ramp, KEY_ACC_TIME/INFO_GET_PERIOD);
   }
   
-  if (forward || back || left || right)
-    km.twist_ctrl = 0;
+  //if (forward || back || left || right)
+    //km.twist_ctrl = 0;
+	/*
+	delete the above two statements because the moving while dodging
+	has been implemented in chassis_task.c already
+	*/
 }
 
 static void chassis_operation_func(uint8_t twist_chassis)
 {
   if (twist_chassis)
-    km.twist_ctrl = 1;
+    km.twist_ctrl = km.twist_ctrl?0:1;
 }
 
 
-static void kb_fric_ctrl(uint8_t open_fric,  uint8_t close_fric)
+static void kb_fric_ctrl(uint8_t trig_fric)
 {
-  if (open_fric)
-    shoot.fric_wheel_run = 1;
-  
-  if (close_fric)
-    shoot.fric_wheel_run = 0;
+  if (trig_fric)
+    shoot.fric_wheel_run = shoot.fric_wheel_run?0:1;
 }
 
 static void kb_shoot_cmd(uint8_t single_fir, uint8_t cont_fir)
@@ -278,7 +280,55 @@ void keyboard_gimbal_hook(void)
 void keyboard_shoot_hook(void)
 {
   //friction wheel control
-  kb_fric_ctrl(KB_OPEN_FRIC_WHEEL, KB_CLOSE_FIRC_WHEEL);
+  kb_fric_ctrl(KB_TRIG_FRIC_WHEEL);
   //single or continuous trigger bullet control
   kb_shoot_cmd(KB_SINGLE_SHOOT, KB_CONTINUE_SHOOT);
+}
+void keyboard_hero_frame()
+{
+	/*signal[0][1] dealler*/
+	if(KB_HERO_FRAME_CONT)
+	{
+		if(frame_ctrl.status == BOTTOM_STAY)
+		{
+			frame_ctrl.signal[TOTOP] = 1;
+			frame_ctrl.signal[TOBOTTOM] = 0;
+		}
+		else
+		{
+			frame_ctrl.signal[TOBOTTOM] = 1;
+			frame_ctrl.signal[TOTOP] = 0;
+		}
+	}
+	else
+	{
+		frame_ctrl.signal[TOBOTTOM] = 0;
+		frame_ctrl.signal[TOTOP] = 0;
+	}
+	/*signal[2][3] dealler*/
+	if(KB_HERO_FRAME_DOWN)
+	{
+		frame_ctrl.signal[UP] = 0;
+		frame_ctrl.signal[DOWN] = 1;
+	}
+	else if(KB_HERO_FRAME_UP)
+	{
+		frame_ctrl.signal[UP] = 1;
+		frame_ctrl.signal[DOWN] = 0;
+	}
+	else
+	{
+		frame_ctrl.signal[DOWN] = 0;
+		frame_ctrl.signal[UP] = 0;
+	}
+	/*Make the signal[0][1]: mutually exclusive*/
+	/*Make the signal[2][3]: mutually exclusive*/
+	if(frame_ctrl.signal[UP] && frame_ctrl.signal[DOWN])
+	{
+		frame_ctrl.signal[UP] = 0;
+	}
+	if(frame_ctrl.signal[TOTOP] && frame_ctrl.signal[TOBOTTOM])
+	{
+		frame_ctrl.signal[TOTOP] = 0;
+	}
 }
