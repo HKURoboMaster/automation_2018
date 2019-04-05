@@ -129,26 +129,26 @@ static void rc_shoot_cmd(uint8_t single_fir, uint8_t cont_fir)
 	}
 	if(cont_fir)
 	{
-//		if(cont_fire_flag)
-//		{
-//			if(HAL_GetTick() - shoot.c_shoot_time >= 600)
-//			{
+		if(cont_fire_flag)
+		{
+			if(HAL_GetTick() - shoot.c_shoot_time >= 600)
+			{
 				shoot.c_shoot_cmd = 1;
 				shoot.shoot_cmd = 0;
-//			}
-//			else
-//				shoot.c_shoot_cmd = 0;	
-//		}
-//		else //the first time of cont_fir
-//		{
-//			cont_fire_flag = 1;
-//			shoot.c_shoot_time = HAL_GetTick();
-//		}
+			}
+			else
+				shoot.c_shoot_cmd = 0;	
+		}
+		else //the first time of cont_fir
+		{
+			cont_fire_flag = 1;
+			shoot.c_shoot_time = HAL_GetTick();
+		}
 	}
-//	else
-//	{
-//		cont_fire_flag = 0;
-//	}
+	else
+	{
+		cont_fire_flag = 0;
+	}
 }
 
 
