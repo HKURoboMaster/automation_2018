@@ -39,10 +39,10 @@ enum
 };
 enum
 {
-	WH_UP_THRESHOLD = -300,
+	WH_UP_THRESHOLD = 300,
 	WH_NEG_MI_THRESHOLD = -100,
 	WH_POS_MI_THRESHOLD = 100,
-	WH_DN_THRESHOLD = 300,
+	WH_DN_THRESHOLD = -300,
 };
 enum hero_signal_index
 {
@@ -73,9 +73,9 @@ typedef struct
 /* control operation definition */
 //      shoot relevant      remote control operation
 //#define RC_SINGLE_SHOOT    ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
-#define RC_SINGLE_SHOOT    ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 > WH_UP_THRESHOLD))
+#define RC_SINGLE_SHOOT   0// ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 < WH_DN_THRESHOLD))
 //#define RC_CONTINUE_SHOOT  (rc.sw1 == RC_DN)
-#define RC_CONTINUE_SHOOT  ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 < WH_DN_THRESHOLD))
+#define RC_CONTINUE_SHOOT  (rc.ch7 > WH_UP_THRESHOLD)
 #define RC_CTRL_FRIC_WHEEL ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_UP))
 #define RM_TURN_ON_MAGALID ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
 

@@ -52,7 +52,7 @@
 /* yaw axis speed */
 #define GIMBAL_RC_MOVE_RATIO_YAW 1.0f
 /*gimbal: yaw axis ratio when controlled by keyboards*/
-#define GIMBAL_KB_MOVE_CONST_YAW 500
+#define GIMBAL_KB_MOVE_CONST_YAW 5
 /* keyboard mode gimbal speed limit */
 /* pitch axis speed */
 #define GIMBAL_PC_MOVE_RATIO_PIT 1.0f

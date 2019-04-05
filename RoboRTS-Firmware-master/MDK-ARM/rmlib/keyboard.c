@@ -266,9 +266,7 @@ void keyboard_gimbal_hook(void)
   {
 		/*Added by Y. H. Liu*/
 		/*For keyboard controlling rotation*/
-		int16_t mouse_key_yaw_ref = rc.mouse.x;
-		mouse_key_yaw_ref += CW?GIMBAL_KB_MOVE_CONST_YAW:0;
-		mouse_key_yaw_ref -= CCW?GIMBAL_KB_MOVE_CONST_YAW:0;
+		int16_t mouse_key_yaw_ref = rc.mouse.x + (CW-CCW)*GIMBAL_KB_MOVE_CONST_YAW;
     gimbal_operation_func(rc.mouse.y, mouse_key_yaw_ref, BUFF_CTRL, TRACK_CTRL);
     /*End of modification*/
     exit_buff_hook(FORWARD, BACK, LEFT, RIGHT);

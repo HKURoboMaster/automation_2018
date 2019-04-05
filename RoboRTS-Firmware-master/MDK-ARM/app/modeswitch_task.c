@@ -151,7 +151,9 @@ static action_mode_e remote_is_action(void)
    || (abs(rc.ch3) >= 10)
    || (abs(rc.ch4) >= 10)
    || (abs(rc.mouse.x) >= 10)
-   || (abs(rc.mouse.y) >= 10))
+   || (abs(rc.mouse.y) >= 10)
+	 || rc.kb.bit.Q
+	 || rc.kb.bit.E)
   {
     return IS_ACTION;
   }

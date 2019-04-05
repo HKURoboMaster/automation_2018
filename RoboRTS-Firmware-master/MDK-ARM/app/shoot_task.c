@@ -39,6 +39,7 @@
 #include "sys_config.h"
 #include "cmsis_os.h"
 #include "string.h"
+#include "math.h"
 
 #define INFANTRY_NUM INFANTRY_3
 #define CAMERA_ON_GIMBAL
@@ -139,14 +140,16 @@ void shoot_task(void const *argu)
 	* return 1 if the bullet is sending into the chamber
 	* return 0 otherwise
 */
-int32_t trigger_motor_rotation = 0;
-int32_t trigger_motor_rot_last = 0;
+float trigger_motor_rotation = 0.0f;
+float trigger_motor_rot_last = 0.0f;
+int32_t total_angle_last		 = 0;
 uint8_t get_trigger_key_state_bypass(void)
 {
 	trigger_motor_rot_last = trigger_motor_rotation;
-	trigger_motor_rotation += moto_trigger.total_angle/36;
-	trigger_motor_rotation %= 360;
-	int32_t bullet_passing_offset  = trigger_motor_rotation % 45;//45 = 360/8
+	trigger_motor_rotation += (moto_trigger.total_angle-total_angle_last)/36.0f;
+	total_angle_last = moto_trigger.total_angle;
+	trigger_motor_rotation = fmodf(trigger_motor_rotation,360);
+	float bullet_passing_offset  = fmodf(trigger_motor_rotation, 45);//45 = 360/8
 	if(bullet_passing_offset>=15 && bullet_passing_offset<30 && trigger_motor_rot_last != trigger_motor_rotation)
 		/*bullet_passing_offset in between 15 and 30
 			and the trigger motor is rotating now. 
@@ -338,6 +341,7 @@ void shoot_param_init(void)
   trig.feed_bullet_spd = 2000;
   trig.c_shoot_spd     = 4000;
   trig.one_sta         = TRIG_INIT;
+	trig.key						 = 0;
   
 }
 
