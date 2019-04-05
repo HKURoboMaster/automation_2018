@@ -43,7 +43,7 @@
 #include "cmsis_os.h"
 
 /* chassis twist angle (degree)*/
-#define TWIST_ANGLE    40
+#define TWIST_ANGLE    180
 /* twist period time (ms) */
 #define TWIST_PERIOD   1500
 /* warning surplus energy */
@@ -182,7 +182,7 @@ static void chassis_twist_handler(void)
   
   if (twist_side > 0)
   {
-    if (gim.sensor.yaw_relative_angle >= 2*twist_angle)
+    if (gim.sensor.yaw_relative_angle >= twist_angle)
     {
       twist_count = 0;
       twist_sign  = -1;
@@ -203,7 +203,7 @@ static void chassis_twist_handler(void)
       twist_sign  = -1;
     }
     
-    if(gim.sensor.yaw_relative_angle <= -2*twist_angle)
+    if(gim.sensor.yaw_relative_angle <= -1*twist_angle)
     {
       twist_count = 0;
       twist_sign  = 1;
