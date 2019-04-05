@@ -248,8 +248,8 @@ static void fric_wheel_ctrl(void)
   
 #endif
 
-int debug_tri_spd = 1500;
-int debug_c_spd   = 600;//2300;//2300//10
+int debug_tri_spd = 2000;
+int debug_c_spd   = 2000;//2300;//2300//10
 
 int shoot_cmd;
 static void shoot_bullet_handler(void)

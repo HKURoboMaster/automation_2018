@@ -119,22 +119,36 @@ static void rc_fric_ctrl(uint8_t ctrl_fric)
     shoot.fric_wheel_run = !shoot.fric_wheel_run;
   }
 }
+uint8_t	cont_fire_flag = 0;
 static void rc_shoot_cmd(uint8_t single_fir, uint8_t cont_fir)
 {
-  if (single_fir)
-  {
-    shoot.c_shoot_time = HAL_GetTick();
-    shoot.shoot_cmd   = 1;
-    shoot.c_shoot_cmd = 0;
-  }
-  
-  if (cont_fir && (HAL_GetTick() - shoot.c_shoot_time >= 2000))
-  {
-    shoot.shoot_cmd   = 0;
-    shoot.c_shoot_cmd = 1;
-  }
-  else
-    shoot.c_shoot_cmd = 0;
+	if(single_fir)
+	{
+		shoot.shoot_cmd = 1;
+		shoot.c_shoot_cmd = 0;
+	}
+	if(cont_fir)
+	{
+//		if(cont_fire_flag)
+//		{
+//			if(HAL_GetTick() - shoot.c_shoot_time >= 600)
+//			{
+				shoot.c_shoot_cmd = 1;
+				shoot.shoot_cmd = 0;
+//			}
+//			else
+//				shoot.c_shoot_cmd = 0;	
+//		}
+//		else //the first time of cont_fir
+//		{
+//			cont_fire_flag = 1;
+//			shoot.c_shoot_time = HAL_GetTick();
+//		}
+	}
+//	else
+//	{
+//		cont_fire_flag = 0;
+//	}
 }
 
 

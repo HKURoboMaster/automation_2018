@@ -36,9 +36,9 @@
 #include "sys_config.h"
 
 /* mouse button long press time */
-#define LONG_PRESS_TIME  1000  //ms
+#define LONG_PRESS_TIME  800  //ms
 /* key acceleration time */
-#define KEY_ACC_TIME     1500  //ms
+#define KEY_ACC_TIME     1000  //ms
 
 kb_ctrl_t km;
 
