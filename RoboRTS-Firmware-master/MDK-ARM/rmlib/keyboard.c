@@ -203,8 +203,8 @@ static void kb_shoot_cmd(uint8_t single_fir, uint8_t cont_fir)
     shoot.shoot_cmd   = 0;
     shoot.c_shoot_cmd = 1;
   }
-  else
-    shoot.c_shoot_cmd = 0;
+  //else
+    //shoot.c_shoot_cmd = 0;
 
 }
 static void gimbal_operation_func(int16_t pit_ref_spd, int16_t yaw_ref_spd,
