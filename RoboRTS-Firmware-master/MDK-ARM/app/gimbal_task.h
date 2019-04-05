@@ -90,6 +90,13 @@ typedef struct
   float speed_kd;
 } gim_pid_debug_t;
 
+typedef struct 
+{
+	float p1;
+	float p2;
+	float p0;
+} low_pass_t;
+
 typedef struct
 {
   /* unit: degree */
