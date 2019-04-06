@@ -63,12 +63,16 @@
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-#define LA_OUTPUT1_Pin GPIO_PIN_12
-#define LA_OUTPUT1_GPIO_Port GPIOH
-#define LA_OUTPUT2_Pin GPIO_PIN_11
-#define LA_OUTPUT2_GPIO_Port GPIOH
-#define LA_OUTPUT_HIGH_Pin GPIO_PIN_10
-#define LA_OUTPUT_HIGH_GPIO_Port GPIOH
+#define LA_3V_Pin GPIO_PIN_0
+#define LA_3V_GPIO_Port GPIOI
+#define LA12_1_Pin GPIO_PIN_12
+#define LA12_1_GPIO_Port GPIOH
+#define LA12_0_Pin GPIO_PIN_11
+#define LA12_0_GPIO_Port GPIOH
+#define LA34_1_Pin GPIO_PIN_10
+#define LA34_1_GPIO_Port GPIOH
+#define LA34_0_Pin GPIO_PIN_15
+#define LA34_0_GPIO_Port GPIOD
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);
