@@ -164,7 +164,19 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LA34_0_GPIO_Port, &GPIO_InitStruct);
-	
+  /*
+  TO LOWER ACUTATORS:
+  HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_RESET);
+  */
+  /*
+  TO RAISE ACUTATORS:
+  HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
+  */
+  /* Note that the above commands might be reversed (so lower might actually raise) */
 }
 
 /* USER CODE BEGIN 2 */
