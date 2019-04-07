@@ -154,8 +154,8 @@
 /* gimbal relevant */
 #define PIT_ANGLE_MAX      20
 #define PIT_ANGLE_MIN      -20
-#define YAW_ANGLE_MAX      180
-#define YAW_ANGLE_MIN      -180
+#define YAW_ANGLE_MAX      40
+#define YAW_ANGLE_MIN      -40
 
 /* detect task relevant */
 #define DEFAULT_TUNE       300

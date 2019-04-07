@@ -98,8 +98,6 @@ typedef struct
   
   float pit_v;
   float yaw_v;
-	/*Horizontal speed for Hero*/
-	int16_t vz;
 } rc_ctrl_t;
 
 

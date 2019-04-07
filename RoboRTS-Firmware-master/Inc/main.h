@@ -80,7 +80,14 @@
 #define SD_EXTI_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
-
+/*defined by Y. H. Liu, for the pins for linear actuators*/
+#define HERO
+#ifdef HERO
+	#define ACTUATOR_PIN_0	GPIO_PIN_17
+	#define ACTUATOR_PIN_1	GPIO_PIN_19
+	#define ACTUATOR_0_PORT	GPIOF
+	#define ACTUATOR_1_PORT	GPIOF
+#endif
 /* USER CODE END Private defines */
 
 void _Error_Handler(char *, int);

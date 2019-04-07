@@ -55,6 +55,8 @@
 //Eric Edited 
 //@Apr 4, 2019 modified by Y H Liu
 #define KB_TURN_ON_MAGALID	(rc.kb.bit.R)
+//@Apr 7, 2019 modified by Y H Liu
+#define KB_FRAME_CTRL_ACTIVE (KB_HERO_FRAME_CONT || KB_HERO_FRAME_UP || KB_HERO_FRAME_DOWN)
 
 
 /**********************************************************************************

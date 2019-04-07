@@ -109,7 +109,9 @@ void get_shoot_info(void)
     {
       shoot.fric_wheel_spd = speed_debug;//DEFAULT_FRIC_WHEEL_SPEED;
       remote_ctrl_shoot_hook();
-			remote_maga_hook();
+			#ifndef HERO
+				remote_maga_hook();
+			#endif
     }break;
     
     case KEYBOARD_CTRL_SHOT:
@@ -117,8 +119,10 @@ void get_shoot_info(void)
       shoot.fric_wheel_spd = speed_debug;//DEFAULT_FRIC_WHEEL_SPEED;
       remote_ctrl_shoot_hook();
       keyboard_shoot_hook();
-			keyboard_maga_hook();
-			remote_maga_hook();
+			#ifndef HERO
+				keyboard_maga_hook();
+				remote_maga_hook();
+			#endif
     }break;
     
     case SEMIAUTO_CTRL_SHOT:
@@ -516,14 +520,16 @@ void get_dma_memory_msg(DMA_Stream_TypeDef *dma_stream, uint8_t *mem_id, uint16_
   *mem_id     = dma_current_memory_target(dma_stream);
   *remain_cnt = dma_current_data_counter(dma_stream);
 }
+
 extern hero_frame frame_ctrl;
 int16_t count_time = 0;
+
 void get_frame_info(void)
 {
 	frame_ctrl.status = OFF; //comment it for hero
-	/*Step-1: get info from RC*/
+	/*Step-1: get info from RC or keyboard*/
 	remote_ctrl_hero_frame();
-	if(km.kb_enable)
+	if(km.kb_enable && KB_FRAME_CTRL_ACTIVE)
 		keyboard_hero_frame();
 	/*Step-2: state transfer*/
 	switch(frame_ctrl.status)
