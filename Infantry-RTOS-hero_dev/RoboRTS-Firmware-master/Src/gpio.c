@@ -176,6 +176,12 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
   */
+  /*
+  TO STOP ACUTATORS:
+  HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
+  */
   /* Note that the above commands might be reversed (so lower might actually raise) */
 }
 
