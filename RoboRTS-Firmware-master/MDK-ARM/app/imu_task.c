@@ -344,7 +344,7 @@ static void imu_attitude_update(void)
   atti.roll  = imu.pit;
   
   gim.sensor.pit_gyro_angle = atti.pitch;
-  gim.sensor.yaw_gyro_angle = atti.yaw;
+  gim.sensor.yaw_gyro_angle = atti.roll;
   
   yaw_a_js = atti.yaw;
 }

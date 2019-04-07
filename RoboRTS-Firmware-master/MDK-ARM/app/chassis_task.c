@@ -89,12 +89,12 @@ void chassis_task(void const *argu)
       taskENTER_CRITICAL();
       if (pc_recv_mesg.chassis_control_data.ctrl_mode == AUTO_FOLLOW_GIMBAL)
       {
-        chassis.vx = (float)pc_recv_mesg.chassis_control_data.x_spd;
+        //chassis.vx = (float)pc_recv_mesg.chassis_control_data.x_spd;
         chassis.vy = (float)pc_recv_mesg.chassis_control_data.y_spd;
       }
       else
       {
-        chassis.vx = 0;
+        //chassis.vx = 0;
         chassis.vy = 0;
       }
       chassis.position_ref = 0;
@@ -108,9 +108,9 @@ void chassis_task(void const *argu)
       taskENTER_CRITICAL();
       if (pc_recv_mesg.chassis_control_data.ctrl_mode == AUTO_SEPARATE_GIMBAL)
       {
-        chassis.vx = (float)pc_recv_mesg.chassis_control_data.x_spd;
+        //chassis.vx = (float)pc_recv_mesg.chassis_control_data.x_spd;
         chassis.vy = (float)pc_recv_mesg.chassis_control_data.y_spd;
-        chassis.vw = pc_recv_mesg.chassis_control_data.w_info.w_spd;
+        //chassis.vw = pc_recv_mesg.chassis_control_data.w_info.w_spd;
       }
       else
       {
@@ -211,27 +211,29 @@ static void chassis_twist_handler(void)
     
   }
   chassis.position_ref = -twist_sign*twist_angle*cos(2*PI/twist_period*twist_count) + twist_side*twist_angle;
-  chassis.vx = chassis.vx * cos(gim.sensor.yaw_relative_angle) - chassis.vy * sin(gim.sensor.yaw_relative_angle);
+  //chassis.vx = chassis.vx * cos(gim.sensor.yaw_relative_angle) - chassis.vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = chassis.vx * sin(gim.sensor.yaw_relative_angle) + chassis.vy * cos(gim.sensor.yaw_relative_angle);
-  chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
+  //chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
 }
 void separate_gimbal_handler(void)
 {
   chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
-  chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
-  chassis.vw = rm.vw * CHASSIS_RC_MOVE_RATIO_R;
+  //chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
+  //chassis.vw = rm.vw * CHASSIS_RC_MOVE_RATIO_R;
 }
 void follow_gimbal_handler(void)
 {
   chassis.position_ref = 0;
   
   chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
-  chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
+  //chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
 
+	/*
   if (chassis.follow_gimbal)
     chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
   else
     chassis.vw = 0;
+	*/
 }
 
 /**
