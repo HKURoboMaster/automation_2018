@@ -36,7 +36,9 @@ UBaseType_t info_stack_surplus;
 
 /* information get task global parameter */
 infantry_structure_t glb_struct;
-
+#ifdef HERO
+extern hero_frame frame_ctrl;
+#endif
 uint32_t info_time_last;
 int info_time_ms;
 void info_get_task(void const *argu)
@@ -63,6 +65,7 @@ void info_get_task(void const *argu)
         get_shoot_info();
 				#ifdef HERO
 					get_frame_info();
+					send_linear_actuator_mesg(frame_ctrl.output);
 				#endif
         get_global_last_info();
         

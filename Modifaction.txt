@@ -69,7 +69,11 @@ Call the function get_frame_info() so that the output is generated, updated
 and ready for furture usage. 
 The get_frame_info() is called in info_get_task.c, line 64.
 
-
+Final Part: 
+Call the send_linear_actuator_mesg with the parameter frame_ctrl.output in
+info_get_task.c at line 68. The function is defined in info_interactive.c
+starting at line 641. This function calls the functions for writing signals to
+GPIO pins. The GPIO pins are defined in main.h and are configured in gpio.h. 
 Before put the hero in use: 
 1. adjust the system configuration
 2. decomment the calling of get_frame_info() in info_get_task.c

@@ -74,15 +74,14 @@
 #define PERIMETER              478
 
 /* wheel track distance(mm) */
-#define WHEELTRACK             445
+#define WHEELTRACK             470
 /* wheelbase distance(mm) */
-#define WHEELBASE              345
+#define WHEELBASE              495
 
 /* gimbal is relative to chassis center x axis offset(mm) */
 #define GIMBAL_X_OFFSET        0
 /* gimbal is relative to chassis center y axis offset(mm) */
-#define GIMBAL_Y_OFFSET        0
-
+#define GIMBAL_Y_OFFSET        47
 /* chassis motor use 3508 default */
 /* define CHASSIS_EC60 to use EC60 */
 //#define CHASSIS_EC60
@@ -125,8 +124,6 @@
 /* the positive direction of tirgger motor */
 #define TRI_MOTO_POSITIVE_DIR  1.0f
 
-/***********************hero framework**************************************/
-#define HERO_FRAME_SPEED			200
 
 /***********************system interface setting****************************/
 

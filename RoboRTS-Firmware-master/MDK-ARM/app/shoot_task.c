@@ -215,6 +215,7 @@ static void fric_wheel_ctrl(void)
     turn_off_laser();
   }
 	//For magazine lid control
+	#ifndef HERO
 	if(maga.funct)
 	{
 		turn_on_magalid(maga.servo_debug);
@@ -223,6 +224,7 @@ static void fric_wheel_ctrl(void)
 	{
 		turn_off_magalid();
 	}
+	#endif
 }
 
 

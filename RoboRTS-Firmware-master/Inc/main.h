@@ -83,10 +83,20 @@
 /*defined by Y. H. Liu, for the pins for linear actuators*/
 #define HERO
 #ifdef HERO
-	#define ACTUATOR_PIN_0	GPIO_PIN_17
-	#define ACTUATOR_PIN_1	GPIO_PIN_19
-	#define ACTUATOR_0_PORT	GPIOF
-	#define ACTUATOR_1_PORT	GPIOF
+	#define LA_3V_Pin GPIO_PIN_0
+	#define LA_3V_GPIO_Port GPIOI
+
+	#define LA12_1_Pin GPIO_PIN_12
+	#define LA12_1_GPIO_Port GPIOH
+
+	#define LA12_0_Pin GPIO_PIN_11
+	#define LA12_0_GPIO_Port GPIOH
+
+	#define LA34_1_Pin GPIO_PIN_10
+	#define LA34_1_GPIO_Port GPIOH
+
+	#define LA34_0_Pin GPIO_PIN_15
+	#define LA34_0_GPIO_Port GPIOD
 #endif
 /* USER CODE END Private defines */
 

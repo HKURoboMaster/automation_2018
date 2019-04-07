@@ -526,7 +526,9 @@ int16_t count_time = 0;
 
 void get_frame_info(void)
 {
-	frame_ctrl.status = OFF; //comment it for hero
+	#ifndef HERO
+	frame_ctrl.status = OFF;
+	#else
 	/*Step-1: get info from RC or keyboard*/
 	remote_ctrl_hero_frame();
 	if(km.kb_enable && KB_FRAME_CTRL_ACTIVE)
@@ -626,6 +628,7 @@ void get_frame_info(void)
 		default:
 			break;
 	}
+	#endif
 	/*Step-3: generate the output*/
 	if(frame_ctrl.status==CONTIN_UP || frame_ctrl.status==UP)
 		frame_ctrl.output = 1;
@@ -634,3 +637,26 @@ void get_frame_info(void)
 	else
 		frame_ctrl.output = 0;
 }
+#ifdef HERO
+void send_linear_actuator_mesg(int8_t frame_output)
+{
+	if(frame_output == 1)//raise
+	{
+		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
+	}
+	else if(frame_output == -1)//lower
+	{
+		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_RESET);
+	}
+	else//stop
+	{
+		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
+	}
+}
+#endif
