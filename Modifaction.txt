@@ -1,0 +1,77 @@
+The raising mechanism includes the following parts: 
+ a. receiving: receive the control signal from dbus_buff and store it into the
+corresponding variable;
+ b. enclose the receiving function into the interactive function, where not
+only the signal receiving but also the state transfer will be done;
+ c. call the interactive function to update all the values. 
+
+What value is necessary? 
+Output: 0----stay; 1----up; -1----down;
+Signal:
+ Up	  0/1
+ Down	  0/1
+ ToBottom 0/1
+ ToTop	  0/1
+    These four values are stored in an array, and to search them, use the
+following const:
+ UP		0
+ DOWN		1
+ TOBOTTOM	2
+ TOTOP		3
+Status:
+ Error/Offline		 0
+ Bottom staying		 1
+ Not bottom staying	-1
+ Continuousely raising	 2
+ Continuousely lowering	-2
+ One-time raising	 3
+ One-time lowering	-3
+
+Variable preparation: 
+Const: UP/DOWN/TOBOTTOM/TOTOP
+       Status representative enum
+ Defined in remote_ctrl.h
+Structure defination: hero_frame
+ Defined in remote_ctrl.h
+Instance of hero_frame: 
+ Declared in remote_ctrl.c
+ Referred in get_interactive.c and info_get_task.c as an external variable
+
+Part a-1 receiving from rc: 
+This will get the info from the dbus and store it into the structure:
+hero_frame
+The last two signals (an array) is updated, i.e. TOTOP and TOBOTTOM
+function name: remote_ctrl_hero_frame()
+Defined in remote_ctrl.c, line 149
+Declared in remote_ctrl.h. line 118
+Called in info_interactive.c: get_frame_info()
+
+Part a-2 receiving from keyboard:
+This will get the info from the debus[keyboard_field] and store it into the
+structre is the mouse_key control is in used
+The 4 signals (the array) is updated.
+function name: keyboard_hero_frame()
+Defined in keyboard.c, line 287
+Declared in keyboard.h, line 127
+Called in info_interactive.c: get_frame_info()
+
+Part b interactive:
+This will call the receiving part and then conduct the state tranfer, so that
+the output can be generated.
+function name: get_frame_info() 
+The status and the output are to be updated.
+Defined in info_interactive.c, line 518
+Declared in info_interactive.h, line 36
+Called in info_get_task.c
+
+Part c Updating:
+Call the function get_frame_info() so that the output is generated, updated
+and ready for furture usage. 
+The get_frame_info() is called in info_get_task.c, line 64.
+
+
+Before put the hero in use: 
+1. adjust the system configuration
+2. decomment the calling of get_frame_info() in info_get_task.c
+3. decomment the first line in the get_frame_info()
+4. comment the control parts for the magazine lid. 

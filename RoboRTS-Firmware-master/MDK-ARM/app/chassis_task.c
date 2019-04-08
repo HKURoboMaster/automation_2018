@@ -43,7 +43,7 @@
 #include "cmsis_os.h"
 
 /* chassis twist angle (degree)*/
-#define TWIST_ANGLE    40
+#define TWIST_ANGLE    180
 /* twist period time (ms) */
 #define TWIST_PERIOD   1500
 /* warning surplus energy */
@@ -71,9 +71,10 @@ void chassis_task(void const *argu)
     {
       if ((gim.ctrl_mode == GIMBAL_RELATIVE_MODE) || (gim.ctrl_mode == GIMBAL_FOLLOW_ZGYRO))
       {
-        chassis.vx = 0;
-        chassis.vy = 0;
-        chassis_twist_handler();
+				chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
+				chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
+        chassis_twist_handler();//re-calculate the x and y speed ref basing on the current position
+																//and calculate the rotation speed
       }
       else
       {
@@ -181,7 +182,7 @@ static void chassis_twist_handler(void)
   
   if (twist_side > 0)
   {
-    if (gim.sensor.yaw_relative_angle >= 2*twist_angle)
+    if (gim.sensor.yaw_relative_angle >= twist_angle)
     {
       twist_count = 0;
       twist_sign  = -1;
@@ -202,7 +203,7 @@ static void chassis_twist_handler(void)
       twist_sign  = -1;
     }
     
-    if(gim.sensor.yaw_relative_angle <= -2*twist_angle)
+    if(gim.sensor.yaw_relative_angle <= -1*twist_angle)
     {
       twist_count = 0;
       twist_sign  = 1;
@@ -210,9 +211,9 @@ static void chassis_twist_handler(void)
     
   }
   chassis.position_ref = -twist_sign*twist_angle*cos(2*PI/twist_period*twist_count) + twist_side*twist_angle;
-  
+  chassis.vx = chassis.vx * cos(gim.sensor.yaw_relative_angle) - chassis.vy * sin(gim.sensor.yaw_relative_angle);
+	chassis.vy = chassis.vx * sin(gim.sensor.yaw_relative_angle) + chassis.vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
-  
 }
 void separate_gimbal_handler(void)
 {
@@ -334,7 +335,7 @@ void chassis_param_init(void)
   }
 #endif
   
-  PID_struct_init(&pid_chassis_angle, POSITION_PID, MAX_CHASSIS_VR_SPEED, 50, 14.0f, 0.0f, 50.0f);
+  PID_struct_init(&pid_chassis_angle, POSITION_PID, MAX_CHASSIS_VR_SPEED, 50, 10.0f, 0.0f, 50.0f);
   
   glb_struct.chassis_config = NO_CONFIG;
   glb_struct.gimbal_config  = NO_CONFIG;

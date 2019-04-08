@@ -81,6 +81,24 @@ typedef struct
 
 typedef struct
 {
+  /* data */
+  float kp;
+  float ki;
+  float kd;
+  float speed_kp;
+  float speed_ki;
+  float speed_kd;
+} gim_pid_debug_t;
+
+typedef struct 
+{
+	float p1;
+	float p2;
+	float p0;
+} low_pass_t;
+
+typedef struct
+{
   /* unit: degree */
   float pit_relative_angle;
   float yaw_relative_angle;

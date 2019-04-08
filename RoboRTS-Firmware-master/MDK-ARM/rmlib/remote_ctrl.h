@@ -37,12 +37,47 @@ enum
   RC_MI = 3,
   RC_DN = 2,
 };
+enum
+{
+	WH_UP_THRESHOLD = 300,
+	WH_NEG_MI_THRESHOLD = -100,
+	WH_POS_MI_THRESHOLD = 100,
+	WH_DN_THRESHOLD = -300,
+};
+enum hero_signal_index
+{
+	UP,
+	DOWN,
+	TOBOTTOM,
+	TOTOP
+};
+
+typedef enum
+{
+	OFF=0,
+	BOTTOM_STAY=1,
+	NON_BOTTOM_STAY=-1,
+	CONTIN_UP=2,
+	CONTIN_DOWN=-2,
+	ONCE_UP=3,
+	ONCE_DOWN=-3
+}hero_frame_status;
+
+typedef struct
+{
+	int8_t output;
+	int8_t signal[4];
+	hero_frame_status status;
+}hero_frame;
 
 /* control operation definition */
 //      shoot relevant      remote control operation
-#define RC_SINGLE_SHOOT    ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
-#define RC_CONTINUE_SHOOT  (rc.sw1 == RC_DN)
+//#define RC_SINGLE_SHOOT    ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
+#define RC_SINGLE_SHOOT   ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 > WH_POS_MI_THRESHOLD))
+//#define RC_CONTINUE_SHOOT  (rc.sw1 == RC_DN)
+#define RC_CONTINUE_SHOOT  (rc.ch7 < WH_NEG_MI_THRESHOLD)
 #define RC_CTRL_FRIC_WHEEL ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_UP))
+#define RM_TURN_ON_MAGALID ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
 
 typedef struct
 {
@@ -50,6 +85,8 @@ typedef struct
   uint8_t last_sw2;
   uint32_t stable_time_sw1;
   uint32_t stable_time_sw2;
+	int16_t last_wh;
+	uint32_t stable_time_wh;
 } sw_record_t;
 
 
@@ -61,6 +98,8 @@ typedef struct
   
   float pit_v;
   float yaw_v;
+	/*Horizontal speed for Hero*/
+	int16_t vz;
 } rc_ctrl_t;
 
 
@@ -76,8 +115,9 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff);
 
 void remote_ctrl_chassis_hook(void);
 void remote_ctrl_gimbal_hook(void);
+void remote_maga_hook(void);
 void remote_ctrl_shoot_hook(void);
-
+void remote_ctrl_hero_frame(void);
 
 
 #endif

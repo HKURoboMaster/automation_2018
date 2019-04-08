@@ -36,18 +36,26 @@
 #define BACK       (rc.kb.bit.S)
 #define LEFT       (rc.kb.bit.A)
 #define RIGHT      (rc.kb.bit.D)
+#define CW				 (rc.kb.bit.E)
+#define CCW				 (rc.kb.bit.Q)
 //      speed      key
 #define FAST_SPD   (rc.kb.bit.SHIFT)
 #define SLOW_SPD   (rc.kb.bit.CTRL)
 //      function   key or mouse operate
-#define TWIST_CTRL (rc.kb.bit.E)
-#define BUFF_CTRL  (rc.kb.bit.F)
+#define TWIST_CTRL (rc.kb.bit.Z)
+#define BUFF_CTRL  (rc.kb.bit.X)
 #define TRACK_CTRL (km.rk_sta == KEY_PRESS_LONG)
 //      shoot relevant       key or mouse operation
 #define KB_SINGLE_SHOOT     (km.lk_sta == KEY_PRESS_ONCE)
 #define KB_CONTINUE_SHOOT   (km.lk_sta == KEY_PRESS_LONG)
-#define KB_OPEN_FRIC_WHEEL  (rc.kb.bit.Q)
-#define KB_CLOSE_FIRC_WHEEL (rc.kb.bit.Q && rc.kb.bit.SHIFT)
+#define KB_TRIG_FRIC_WHEEL  (rc.kb.bit.F)
+#define KB_HERO_FRAME_CONT	(rc.kb.bit.R)
+#define KB_HERO_FRAME_UP		(rc.kb.bit.X)
+#define KB_HERO_FRAME_DOWN	(rc.kb.bit.C)
+//Eric Edited 
+//@Apr 4, 2019 modified by Y H Liu
+#define KB_TURN_ON_MAGALID	(rc.kb.bit.R)
+
 
 /**********************************************************************************
  * bit      :15   14   13   12   11   10   9   8   7   6     5     4   3   2   1
@@ -121,5 +129,7 @@ void keyboard_global_hook(void);
 void keyboard_chassis_hook(void);
 void keyboard_gimbal_hook(void);
 void keyboard_shoot_hook(void);
+void keyboard_hero_frame(void);
+void keyboard_maga_hook(void);
 
 #endif

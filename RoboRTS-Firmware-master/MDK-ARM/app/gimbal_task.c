@@ -44,6 +44,7 @@
 #include "string.h"
 
 #include "kalman_filter.h"
+
 //If you need to debug pls define this stuff
 #define DEBUG_GIM_PID
 
@@ -72,6 +73,10 @@ uint32_t gimbal_time_ms;
 /* for debug */
 int pid_yaw_out_js;
 int pid_pitch_out_js;
+int pid_yaw_final_out_js;
+
+int pc_debug;
+
 
 int yaw_angle_fdb_js;
 int yaw_angle_ref_js;
@@ -83,22 +88,52 @@ int pit_angle_ref_js;
 int pit_speed_fdb_js;
 int pit_speed_ref_js;
 /*-------------EricEditedSTART----------------*/ //19.03.03
+
+/*-------------JerryEditedSTART----------------*/ //19.03.17
+gim_pid_debug_t debug_pit = {
+  -20, \
+  0, \
+  -30, \
+  -20, \
+  -0.0015, \
+  40  //tested worked pid
+};
+
+gim_pid_debug_t debug_yaw = {
+  -20.0, \
+  0.0, \
+  0.0, \
+  -60, \
+  0, \
+  0
+};
+
+low_pass_t debug_lowpass = {0.4,0.4,0.2};
+/*-------------JerryEditedEND----------------*/
+
 #ifdef DEBUG_GIM_PID
-float kp_pit = 170.0; //156.0, 1, 450.0
-float ki_pit = 3.5;
-float kd_pit = 100.0;
 
-float kp_yaw = 1200.0;
-float ki_yaw = 15.0;
-float kd_yaw = 30.0;
+// Old implementation of debug, commented on 19.03.17 by Jerry
+/*
+float kp_pit = debug_pit.kp; //156.0, 1, 450.0
+float ki_pit = debug_pit.ki;
+float kd_pit = debug_pit.kd;
 
-float speed_p_kp = 3; //3
-float speed_p_ki = 0;
-float speed_p_kd = 3; //3
+float kp_yaw = debug_yaw.kp;
+float ki_yaw = debug_yaw.ki;
+float kd_yaw = debug_yaw.kd;
 
-float speed_y_kp = 10; //3
-float speed_y_ki = 0;
-float speed_y_kd = 50; //1.2
+float speed_p_kp = debug_pit.speed_kp; //3
+float speed_p_ki = debug_pit.speed_ki;
+float speed_p_kd = debug_pit.speed_kd; //3
+
+float speed_y_kp = debug_yaw.speed_kp; //3
+float speed_y_ki = debug_yaw.speed_ki;
+float speed_y_kd = debug_yaw.speed_kd; //1.2
+*/
+float previous;
+float previous2;
+int checker = 0 ;
 #endif
 /*--------------EricEditedEND--------------*/
 typedef struct  // speed_calc_data_t
@@ -189,7 +224,7 @@ void gimbal_task(void const *argu)
   gimbal_time_last = HAL_GetTick();
   
 //---------------------------------------------------
-  archive_index++;
+  archive_index++;  //This is a 2-D array that stores attitide information
   if (archive_index > 99) //system delay ms
     archive_index = 0;
   gimbal_attitude_archive[archive_index][0] = gim.sensor.yaw_gyro_angle;//gim.pid.yaw_angle_fdb;
@@ -238,23 +273,27 @@ void gimbal_task(void const *argu)
   }
 	
 	/*---------------EricEditedSTART---------------*/ //19.03.03
+	
+	// Jerry modified using struct on 19.03.17
 	#ifdef DEBUG_GIM_PID
-  pid_pit.p = kp_pit;
-	pid_pit.i = ki_pit;
-	pid_pit.d = kd_pit;
+  pid_pit.p = debug_pit.kp;
+	pid_pit.i = debug_pit.ki;
+	pid_pit.d = debug_pit.kd;
+	 //test if it will die 
 	
-	pid_yaw.p = kp_yaw;
-	pid_yaw.i = ki_yaw;
-	pid_yaw.d = kd_yaw;
+	pid_yaw.p = debug_yaw.kp;
+	pid_yaw.i = debug_yaw.ki;
+	pid_yaw.d = debug_yaw.kd;
 	
-	pid_pit_spd.p = speed_p_kp;
-	pid_pit_spd.i = speed_p_ki;
-	pid_pit_spd.d = speed_p_kd;
+	pid_pit_spd.p = debug_pit.speed_kp;
+	pid_pit_spd.i = debug_pit.speed_ki;
+	pid_pit_spd.d = debug_pit.speed_kd;
 	
-	pid_yaw_spd.p = speed_y_kp;
-	pid_yaw_spd.i = speed_y_ki;
-	pid_yaw_spd.d = speed_y_kd;
+	pid_yaw_spd.p = debug_yaw.speed_kp;
+	pid_yaw_spd.i = debug_yaw.speed_ki;
+	pid_yaw_spd.d = debug_yaw.speed_kd;
 	#endif
+	
 	/*---------------EricEditedEND---------------*/
 	
   pid_calc(&pid_yaw, gim.pid.yaw_angle_fdb, gim.pid.yaw_angle_ref);
@@ -262,16 +301,29 @@ void gimbal_task(void const *argu)
   
 	pid_yaw.out = pid_yaw.out * (-1); // reverse pid here
   gim.pid.yaw_spd_ref = pid_yaw.out;
-	//pid_yaw_out_js = pid_yaw.out*1000;
+	pid_yaw_out_js = pid_yaw.out*1000;
 	
   gim.pid.pit_spd_ref = pid_pit.out;
-	//pid_pitch_out_js = pid_pit.out*1000;
+	pid_pitch_out_js = pid_pit.out*1000;
   
   gim.pid.yaw_spd_fdb = gim.sensor.yaw_palstance;
-  gim.pid.pit_spd_fdb = gim.sensor.pit_palstance;
   
+	if (checker == 0 )
+	{
+		checker = 1;
+		previous = gim.sensor.pit_palstance;
+		previous2  = previous;
+	}
+	else
+	{
+		previous2 = previous;
+		previous = gim.pid.pit_spd_fdb;
+	
+	}
+  gim.pid.pit_spd_fdb = gim.sensor.pit_palstance*debug_lowpass.p0+debug_lowpass.p1*previous + debug_lowpass.p2*previous2;
   pid_calc(&pid_yaw_spd, gim.pid.yaw_spd_fdb, gim.pid.yaw_spd_ref);
   pid_calc(&pid_pit_spd, gim.pid.pit_spd_fdb, gim.pid.pit_spd_ref);
+	pid_yaw_final_out_js = pid_yaw_spd.out * 1000;
 
   /* safe protect */
   if (gimbal_is_controllable())
@@ -407,8 +459,8 @@ void pc_position_ctrl_handler(void)
   gim.pid.pit_angle_fdb = gim.sensor.pit_relative_angle;
   gim.pid.yaw_angle_fdb = gim.sensor.yaw_relative_angle;
   
-  gim.pid.yaw_angle_ref = pc_recv_mesg.gimbal_control_data.yaw_ref;
-  gim.pid.pit_angle_ref = pc_recv_mesg.gimbal_control_data.pit_ref;
+  gim.pid.yaw_angle_ref += pc_recv_mesg.gimbal_control_data.yaw_ref;
+  gim.pid.pit_angle_ref += pc_recv_mesg.gimbal_control_data.pit_ref;
   
   VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
   VAL_LIMIT(gim.pid.pit_angle_ref, PIT_ANGLE_MIN, PIT_ANGLE_MAX);
@@ -466,12 +518,13 @@ void pc_relative_ctrl_handler(void)
   if ((gim.sensor.yaw_relative_angle >= YAW_ANGLE_MIN-35) && \
       (gim.sensor.yaw_relative_angle <= YAW_ANGLE_MAX+35))
   {
-    gim.pid.yaw_angle_ref = yaw_kf_result[0];// + yaw_kf_result[1]*(0.10f + dist_kf_result[0]/18000);
+    gim.pid.yaw_angle_ref += yaw_kf_result[0];// + yaw_kf_result[1]*(0.10f + dist_kf_result[0]/18000);
+		pc_debug = pc_recv_mesg.gimbal_control_data.yaw_ref;
   }
   chassis_angle_tmp = gim.sensor.yaw_gyro_angle - gim.sensor.yaw_relative_angle;
   VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
   
-  gim.pid.pit_angle_ref = pitch_angle_raw;//pitch_kf_result[0] + pit_deg;
+  gim.pid.pit_angle_ref += pitch_angle_raw;//pitch_kf_result[0] + pit_deg;
   VAL_LIMIT(gim.pid.pit_angle_ref, PIT_ANGLE_MIN, PIT_ANGLE_MAX);
   
   

@@ -39,8 +39,10 @@
 #include "sys_config.h"
 #include "cmsis_os.h"
 #include "string.h"
+#include "math.h"
 
 #define INFANTRY_NUM INFANTRY_3
+
 #define CAMERA_ON_GIMBAL
 
 #ifndef INFANTRY_NUM
@@ -53,6 +55,8 @@ UBaseType_t shoot_stack_surplus;
 /* shoot task global parameter */
 shoot_t   shoot;
 trigger_t trig;
+maga_t maga = {0,41};
+
 
 uint32_t shoot_time_last;
 int shoot_time_ms;
@@ -109,7 +113,7 @@ void shoot_task(void const *argu)
         */
 #else
         
-        trig.key = get_trigger_key_state();
+        trig.key = get_trigger_key_state_bypass();
         
         if (shoot.fric_wheel_run)
         {
@@ -130,6 +134,37 @@ void shoot_task(void const *argu)
 }
 
 
+
+/**
+  * This function is to replace the get_trigger_key_state when the bullet_shot_detector is not fixed;
+  * return either 0 or 1
+	* return 1 if the bullet is sending into the chamber
+	* return 0 otherwise
+*/
+float trigger_motor_rotation = 0.0f;
+float trigger_motor_rot_last = 0.0f;
+int32_t total_angle_last		 = 0;
+uint8_t get_trigger_key_state_bypass(void)
+{
+	trigger_motor_rot_last = trigger_motor_rotation;
+	trigger_motor_rotation += (moto_trigger.total_angle-total_angle_last)/36.0f;
+	total_angle_last = moto_trigger.total_angle;
+	trigger_motor_rotation = fmodf(trigger_motor_rotation,360);
+	float bullet_passing_offset  = fmodf(trigger_motor_rotation, 45);//45 = 360/8
+	if(bullet_passing_offset>=15 && bullet_passing_offset<30 && trigger_motor_rot_last != trigger_motor_rotation)
+		/*bullet_passing_offset in between 15 and 30
+			and the trigger motor is rotating now. 
+		*/
+		return 1;
+	else
+		return 0;
+}
+/*
+ * This function deals with the situation when the trigger motor is blocked. 
+ * When the output of trigger motor pid (i.e. the currency) is too high for 0.25s
+ * which illustrates the motor is blocked or rotating too slow
+ * the trigger motor will rotate backward for 0.25s. 
+*/
 void block_bullet_handler(void)
 {
   static uint32_t stall_count = 0;
@@ -164,6 +199,9 @@ void block_bullet_handler(void)
   }
 }
 
+//Eric Edited
+//Modified by Y H Liu @Apr 3rd, 2019
+//not only for the friction wheels but magazine lid as well. Both are using PWM
 static void fric_wheel_ctrl(void)
 {
   if (shoot.fric_wheel_run)
@@ -176,34 +214,43 @@ static void fric_wheel_ctrl(void)
     turn_off_friction_wheel();
     turn_off_laser();
   }
+	//For magazine lid control
+	if(maga.funct)
+	{
+		turn_on_magalid(maga.servo_debug);
+	}
+	else
+	{
+		turn_off_magalid();
+	}
 }
 
 
 #if (INFANTRY_NUM == INFANTRY_1)
-  int speed_debug = 1130;
+  int speed_debug = 200;
 
 #elif (INFANTRY_NUM == INFANTRY_2)
-  int speed_debug = 1130;
+  int speed_debug = 200;
 
 #elif (INFANTRY_NUM == INFANTRY_3)
-  int speed_debug = 1130; //17.5
+  int speed_debug = 200; //17.5
 
 #elif (INFANTRY_NUM == INFANTRY_4)
-  int speed_debug = 1130;//16.5
+  int speed_debug = 200;//16.5
   
 #elif (INFANTRY_NUM == INFANTRY_5)
-  int speed_debug = 1130;//16.5
+  int speed_debug = 200;//16.5
   
 #elif (INFANTRY_NUM == INFANTRY_6)
-  int speed_debug = 1130;//15.5
+  int speed_debug = 200;//15.5
   
 #else
   #error "INFANTRY_NUM define error!"
   
 #endif
 
-int debug_tri_spd = 1500;
-int debug_c_spd   = 600;//2300;//2300//10
+int debug_tri_spd = 2000;
+int debug_c_spd   = 2000;//2300;//2300//10
 
 int shoot_cmd;
 static void shoot_bullet_handler(void)
@@ -295,6 +342,7 @@ void shoot_param_init(void)
   trig.feed_bullet_spd = 2000;
   trig.c_shoot_spd     = 4000;
   trig.one_sta         = TRIG_INIT;
+	trig.key						 = 0;
   
 }
 
