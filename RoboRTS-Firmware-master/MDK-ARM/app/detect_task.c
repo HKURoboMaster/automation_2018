@@ -99,7 +99,7 @@ void global_err_detector_init(void)
   g_err.list[TRIGGER_MOTO_OFFLINE].pri       = 6;
   g_err.list[TRIGGER_MOTO_OFFLINE].enable    = 1;
 
-  for (int i = 0; i < 2; i++)
+  for (int i = 0; i < 1; i++)
   {
     g_err.list[CHASSIS_M1_OFFLINE + i].err_exist = 0;
     g_err.list[CHASSIS_M1_OFFLINE + i].pri       = 2 + i; //2,3,4,5

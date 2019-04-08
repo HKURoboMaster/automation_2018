@@ -49,7 +49,7 @@ static volatile float q3 = 0.0f;
 static volatile uint32_t last_update, now_update;
 static volatile float exInt, eyInt, ezInt;
 static volatile float gx, gy, gz, ax, ay, az, mx, my, mz;   //
-
+int pit,yaw,roll;
 /**
   * @brief     Fast inverse square-root, to calculate 1/Sqrt(x)
   * @param[in] input:x
@@ -340,11 +340,13 @@ static void imu_attitude_update(void)
   atti.last_yaw = imu.yaw;
   
   atti.yaw   = imu.yaw + atti.yaw_cnt*360;
-  atti.pitch = -imu.rol;
+  atti.pitch = imu.rol;
   atti.roll  = imu.pit;
-  
+  yaw = (int)atti.yaw*1000;
+	pit = (int)atti.pitch*1000;
+	roll = (int)atti.roll*1000;
   gim.sensor.pit_gyro_angle = atti.pitch;
-  gim.sensor.yaw_gyro_angle = atti.roll;
+  gim.sensor.yaw_gyro_angle = -atti.yaw;
   
   yaw_a_js = atti.yaw;
 }

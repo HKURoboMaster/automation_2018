@@ -72,8 +72,8 @@ void chassis_task(void const *argu)
       if ((gim.ctrl_mode == GIMBAL_RELATIVE_MODE) || (gim.ctrl_mode == GIMBAL_FOLLOW_ZGYRO))
       {
 				chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
-				chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
-        chassis_twist_handler();//re-calculate the x and y speed ref basing on the current position
+				//chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
+        //chassis_twist_handler();//re-calculate the x and y speed ref basing on the current position
 																//and calculate the rotation speed
       }
       else
@@ -94,7 +94,7 @@ void chassis_task(void const *argu)
       }
       else
       {
-        //chassis.vx = 0;
+        chassis.vx = 0;
         chassis.vy = 0;
       }
       chassis.position_ref = 0;
@@ -211,9 +211,9 @@ static void chassis_twist_handler(void)
     
   }
   chassis.position_ref = -twist_sign*twist_angle*cos(2*PI/twist_period*twist_count) + twist_side*twist_angle;
-  //chassis.vx = chassis.vx * cos(gim.sensor.yaw_relative_angle) - chassis.vy * sin(gim.sensor.yaw_relative_angle);
+  chassis.vx = chassis.vx * cos(gim.sensor.yaw_relative_angle) - chassis.vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = chassis.vx * sin(gim.sensor.yaw_relative_angle) + chassis.vy * cos(gim.sensor.yaw_relative_angle);
-  //chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
+  chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
 }
 void separate_gimbal_handler(void)
 {
@@ -228,12 +228,10 @@ void follow_gimbal_handler(void)
   chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
   //chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
 
-	/*
-  if (chassis.follow_gimbal)
-    chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
-  else
-    chassis.vw = 0;
-	*/
+  //if (chassis.follow_gimbal)
+    //chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
+  //else
+    //chassis.vw = 0;
 }
 
 /**

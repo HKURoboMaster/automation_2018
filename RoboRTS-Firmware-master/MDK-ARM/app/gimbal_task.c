@@ -100,12 +100,12 @@ gim_pid_debug_t debug_pit = {
 };
 
 gim_pid_debug_t debug_yaw = {
-  -20.0, \
+  15.0, \
   0.0, \
-  0.0, \
-  -60, \
+  50.0, \
+  6, \
   0, \
-  0
+  1
 };
 
 low_pass_t debug_lowpass = {0.4,0.4,0.2};
