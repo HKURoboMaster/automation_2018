@@ -75,7 +75,7 @@ typedef struct
 //#define RC_SINGLE_SHOOT    ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
 #define RC_SINGLE_SHOOT   ((glb_sw.last_wh<WH_POS_MI_THRESHOLD) && (glb_sw.last_wh>WH_NEG_MI_THRESHOLD) && (rc.ch7 > WH_POS_MI_THRESHOLD))
 //#define RC_CONTINUE_SHOOT  (rc.sw1 == RC_DN)
-#define RC_CONTINUE_SHOOT  (rc.ch7 < 0)
+#define RC_CONTINUE_SHOOT  (rc.ch7 < WH_NEG_MI_THRESHOLD)
 #define RC_CTRL_FRIC_WHEEL ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_UP))
 #define RM_TURN_ON_MAGALID ((glb_sw.last_sw1 == RC_MI) && (rc.sw1 == RC_DN))
 
