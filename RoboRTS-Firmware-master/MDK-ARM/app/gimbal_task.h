@@ -155,6 +155,6 @@ void gimbal_back_param(void);
 
 void gimbal_task(void const *argu);
 void gimbal_self_check(void);
-
+void hero_frame_init(void);
 #endif
 

@@ -31,6 +31,7 @@
 #include "keyboard.h"
 #include "cmsis_os.h"
 
+#define HERO_FRAME_JSDEBUG
 /* stack usage monitor */
 UBaseType_t info_stack_surplus;
 
@@ -38,6 +39,14 @@ UBaseType_t info_stack_surplus;
 infantry_structure_t glb_struct;
 #ifdef HERO
 extern hero_frame frame_ctrl;
+#ifdef HERO_FRAME_JSDEBUG
+int hero_frame_ctrl_output_js = 0;
+int hero_frame_ctrl_statusUP_js = 0;
+int hero_frame_ctrl_statusDOWN_js = 0;
+int hero_frame_ctrl_statusTOTOP_js = 0;
+int hero_frame_ctrl_statusTOBOTTOM_js = 0;
+int hero_frame_ctrl_statusFSM_js = 0;
+#endif
 #endif
 uint32_t info_time_last;
 int info_time_ms;
@@ -66,6 +75,14 @@ void info_get_task(void const *argu)
 				#ifdef HERO
 					get_frame_info();
 					send_linear_actuator_mesg(frame_ctrl.output);
+					#ifdef HERO_FRAME_JSDEBUG
+						hero_frame_ctrl_output_js = frame_ctrl.output;
+						hero_frame_ctrl_statusUP_js = frame_ctrl.signal[UP];
+						hero_frame_ctrl_statusDOWN_js = frame_ctrl.signal[DOWN];
+						hero_frame_ctrl_statusTOTOP_js = frame_ctrl.signal[TOTOP];
+						hero_frame_ctrl_statusTOBOTTOM_js = frame_ctrl.signal[TOBOTTOM];
+						hero_frame_ctrl_statusFSM_js = frame_ctrl.status;
+					#endif
 				#endif
         get_global_last_info();
         

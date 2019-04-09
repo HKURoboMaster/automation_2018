@@ -64,4 +64,5 @@ static void get_structure_param(void);
 static void gimbal_cali_msg_hook(uint8_t cur_type, uint8_t last_type);
 
 void send_linear_actuator_mesg(int8_t frame_output);
+void hero_frame_init(void);
 #endif

@@ -585,15 +585,15 @@ void gimbal_param_init(void)
   gim.input.action_angle   = 5.0f;
   
   /* pitch axis motor pid parameter */
-  PID_struct_init(&pid_pit, POSITION_PID, 1000, 0,
+  PID_struct_init(&pid_pit, POSITION_PID, 0, 0,
                   130, 1, 65); //
-  PID_struct_init(&pid_pit_spd, POSITION_PID, 6000, 3000,
+  PID_struct_init(&pid_pit_spd, POSITION_PID, 0, 3000,
                   3.7, 0, 0);  //16
 
   /* yaw axis motor pid parameter */
-  PID_struct_init(&pid_yaw, POSITION_PID, 1000, 0,
+  PID_struct_init(&pid_yaw, POSITION_PID, 0, 0,
                   156.0, 1, 450.0); //
-  PID_struct_init(&pid_yaw_spd, POSITION_PID, 6000, 3000,
+  PID_struct_init(&pid_yaw_spd, POSITION_PID, 0, 3000,
                   30 , 0, 7.5);  //30 //7.5
   
   /* bullet trigger motor pid parameter */
@@ -650,4 +650,19 @@ float target_speed_calc(speed_calc_data_t *S, uint32_t time, float position)
   return S->processed_speed;
 }
 
+extern hero_frame frame_ctrl;
+
+void hero_frame_init()
+{
+	frame_ctrl.output = 0;
+	frame_ctrl.signal[UP] = 0;
+	frame_ctrl.signal[DOWN] = 0;
+	frame_ctrl.signal[TOBOTTOM] = 0;
+	frame_ctrl.signal[TOTOP] = 0;
+	#ifdef HERO
+	frame_ctrl.status = BOTTOM_STAY;
+	#else
+	frame_ctrl.status = OFF;
+	#endif
+}
 

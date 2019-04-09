@@ -639,16 +639,19 @@ void get_frame_info(void)
 	else
 		frame_ctrl.output = 0;
 }
+
 #ifdef HERO
+int8_t prev_frame_out = 0;
+
 void send_linear_actuator_mesg(int8_t frame_output)
 {
-	if(frame_output == 1)//raise
+	if(frame_output == 1 && prev_frame_out != 1)//raise
 	{
 		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
 	}
-	else if(frame_output == -1)//lower
+	else if(frame_output == -1 && prev_frame_out != -1)//lower
 	{
 		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_RESET);
@@ -660,5 +663,7 @@ void send_linear_actuator_mesg(int8_t frame_output)
 		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
 	}
+	prev_frame_out = frame_output;
 }
 #endif
+

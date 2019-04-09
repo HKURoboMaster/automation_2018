@@ -145,6 +145,7 @@ int main(void)
   communicate_param_init();
   imu_param_init();
   cali_param_init();
+	hero_frame_init(); //defined in gimbal_task.c and decleared in gimbal_task.h
   //hardware device initialize
   pwm_device_init();
   mpu_device_init();
