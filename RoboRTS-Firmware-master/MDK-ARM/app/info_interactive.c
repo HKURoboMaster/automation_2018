@@ -537,6 +537,7 @@ void get_frame_info(void)
 	switch(frame_ctrl.status)
 	{
 		case OFF:
+			frame_ctrl.status = rc.sw2==RC_UP?BOTTOM_STAY:OFF;
 			break;
 		case BOTTOM_STAY:
 		{
@@ -628,6 +629,7 @@ void get_frame_info(void)
 		default:
 			break;
 	}
+	if(rc.sw2!=RC_UP)	frame_ctrl.status = OFF;
 	#endif
 	/*Step-3: generate the output*/
 	if(frame_ctrl.status==CONTIN_UP || frame_ctrl.status==UP)
