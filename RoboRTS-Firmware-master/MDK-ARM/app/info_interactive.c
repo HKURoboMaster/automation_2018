@@ -657,7 +657,7 @@ void send_linear_actuator_mesg(int8_t frame_output)
 		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_RESET);
 	}
-	else//stop
+	else if(frame_output == 0 && prev_frame_out != 0)//stop
 	{
 		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);

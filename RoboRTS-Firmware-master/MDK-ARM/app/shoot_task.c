@@ -229,22 +229,22 @@ static void fric_wheel_ctrl(void)
 
 
 #if (INFANTRY_NUM == INFANTRY_1)
-  int speed_debug = 200;
+  int speed_debug = 1130;
 
 #elif (INFANTRY_NUM == INFANTRY_2)
-  int speed_debug = 200;
+  int speed_debug = 1130;
 
 #elif (INFANTRY_NUM == INFANTRY_3)
   int speed_debug = 200; //17.5
 
 #elif (INFANTRY_NUM == INFANTRY_4)
-  int speed_debug = 200;//16.5
+  int speed_debug = 1130;//16.5
   
 #elif (INFANTRY_NUM == INFANTRY_5)
-  int speed_debug = 200;//16.5
+  int speed_debug = 1130;//16.5
   
 #elif (INFANTRY_NUM == INFANTRY_6)
-  int speed_debug = 200;//15.5
+  int speed_debug = 1130;//15.5
   
 #else
   #error "INFANTRY_NUM define error!"
