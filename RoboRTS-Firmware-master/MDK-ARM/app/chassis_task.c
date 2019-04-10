@@ -45,7 +45,7 @@
 /* chassis twist angle (degree)*/
 #define TWIST_ANGLE    180
 /* twist period time (ms) */
-#define TWIST_PERIOD   1500
+#define TWIST_PERIOD   3000
 /* warning surplus energy */
 #define WARNING_ENERGY 40.0f
 
@@ -53,6 +53,8 @@ UBaseType_t chassis_stack_surplus;
 
 /* chassis task global parameter */
 chassis_t chassis;
+
+float chassis_current_sum_js;
 
 uint32_t chassis_time_last;
 int chassis_time_ms;
@@ -145,12 +147,14 @@ void chassis_task(void const *argu)
   }
 
   mecanum_calc(chassis.vx, chassis.vy, chassis.vw, chassis.wheel_spd_ref);
-
+	
+	chassis_current_sum_js = 0;
   for (int i = 0; i < 4; i++)
   {
     chassis.current[i] = pid_calc(&pid_spd[i], chassis.wheel_spd_fdb[i], chassis.wheel_spd_ref[i]);
+		chassis_current_sum_js += chassis.current[i]*1000;
   }
-  
+  //
   if (!chassis_is_controllable())
   {
     memset(chassis.current, 0, sizeof(chassis.current));
