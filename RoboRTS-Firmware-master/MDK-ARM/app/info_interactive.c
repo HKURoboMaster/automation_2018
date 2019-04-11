@@ -318,7 +318,7 @@ uint8_t read_gimbal_offset(int32_t *pit_offset, int32_t *yaw_offset)
   else
     return 0;
 }
-
+int pit_relative_angle_js;
 void get_gimbal_info(void)
 {
   static uint8_t last_cali_type;
@@ -327,6 +327,7 @@ void get_gimbal_info(void)
   static float pit_ecd_ratio = PIT_MOTO_POSITIVE_DIR*PIT_DECELE_RATIO/ENCODER_ANGLE_RATIO;
   gim.sensor.yaw_relative_angle = yaw_ecd_ratio*get_relative_pos(moto_yaw.ecd, gim.yaw_center_offset);
   gim.sensor.pit_relative_angle = pit_ecd_ratio*get_relative_pos(moto_pit.ecd, gim.pit_center_offset);
+	pit_relative_angle_js = gim.sensor.pit_relative_angle* 1000;
   
   /* get gimbal relative palstance */
   //the Z axis(yaw) of gimbal coordinate system corresponds to the IMU Z axis

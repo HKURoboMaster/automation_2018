@@ -91,23 +91,33 @@ int pit_speed_ref_js;
 
 /*-------------JerryEditedSTART----------------*/ //19.03.17
 gim_pid_debug_t debug_pit = {
-  -20, \
+  6, \
   0, \
-  -30, \
-  -20, \
-  -0.0015, \
-  40  //tested worked pid
+  0, \
+  24.7, \
+  0, \
+  0  //tested worked pid
 };
-
+//-20, \
+//  0, \
+//  -30, \
+//  -20, \
+//  -0.0015, \
+//  40
 gim_pid_debug_t debug_yaw = {
-  -20.0, \
+  9, \
+  -0.1, \
+  0.0, \
+  0.8, \
+  0, \
+  0
+};
+/*-20.0, \
   0.0, \
   0.0, \
   -60, \
   0, \
-  0
-};
-
+  0*/
 low_pass_t debug_lowpass = {0.4,0.4,0.2};
 /*-------------JerryEditedEND----------------*/
 
@@ -299,7 +309,7 @@ void gimbal_task(void const *argu)
   pid_calc(&pid_yaw, gim.pid.yaw_angle_fdb, gim.pid.yaw_angle_ref);
   pid_calc(&pid_pit, gim.pid.pit_angle_fdb, gim.pid.pit_angle_ref);
   
-	pid_yaw.out = pid_yaw.out * (-1); // reverse pid here
+	//pid_yaw.out = pid_yaw.out * (-1); // reverse pid here
   gim.pid.yaw_spd_ref = pid_yaw.out;
 	pid_yaw_out_js = pid_yaw.out*1000;
 	
@@ -585,15 +595,15 @@ void gimbal_param_init(void)
   gim.input.action_angle   = 5.0f;
   
   /* pitch axis motor pid parameter */
-  PID_struct_init(&pid_pit, POSITION_PID, 0, 0,
+  PID_struct_init(&pid_pit, POSITION_PID, 1000, 0,
                   130, 1, 65); //
-  PID_struct_init(&pid_pit_spd, POSITION_PID, 0, 3000,
+  PID_struct_init(&pid_pit_spd, POSITION_PID, 6000, 3000,
                   3.7, 0, 0);  //16
 
   /* yaw axis motor pid parameter */
-  PID_struct_init(&pid_yaw, POSITION_PID, 0, 0,
+  PID_struct_init(&pid_yaw, POSITION_PID, 1000, 0,
                   156.0, 1, 450.0); //
-  PID_struct_init(&pid_yaw_spd, POSITION_PID, 0, 3000,
+  PID_struct_init(&pid_yaw_spd, POSITION_PID, 6000, 3000,
                   30 , 0, 7.5);  //30 //7.5
   
   /* bullet trigger motor pid parameter */
