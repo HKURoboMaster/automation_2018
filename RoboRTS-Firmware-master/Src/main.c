@@ -171,7 +171,7 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
   /* USER CODE BEGIN 3 */
 
   }

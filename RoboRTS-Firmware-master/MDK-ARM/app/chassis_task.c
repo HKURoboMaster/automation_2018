@@ -48,14 +48,22 @@
 #define TWIST_PERIOD   1500
 /* warning surplus energy */
 #define WARNING_ENERGY 40.0f
+/* a constant speed of sentry */
+#define CONSTANT_SPEED 100
 
 UBaseType_t chassis_stack_surplus;
 
 /* chassis task global parameter */
 chassis_t chassis;
 
-int GPIO_left_debug_js;
-int GPIO_right_debug_js;
+/* set this to 0 if not using rm */
+int using_rm = 1;
+
+int direction_ind = 1;
+GPIO_PinState prev_state_L = GPIO_PIN_SET;
+GPIO_PinState curr_state_L = GPIO_PIN_SET;
+GPIO_PinState prev_state_R = GPIO_PIN_SET;
+GPIO_PinState curr_state_R = GPIO_PIN_SET;
 
 uint32_t chassis_time_last;
 int chassis_time_ms;
@@ -67,6 +75,32 @@ void chassis_task(void const *argu)
   
 //    get_chassis_info();
 //    get_chassis_mode();
+	
+	/* GPIO debug in gimbal_task.c */
+	
+	/* IR Restriction debug functions */ 
+	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET)
+  {
+		direction_ind = 1;
+    //memset(chassis.current, 0, sizeof(chassis.current));
+  }
+	
+	if (HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin) == GPIO_PIN_RESET)
+  {
+		direction_ind = -1;
+    //memset(chassis.current, 0, sizeof(chassis.current));
+  }
+	
+	/* IR reverse direction functions */ /*
+	prev_state_L = curr_state_L;
+	curr_state_L = HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin);
+	prev_state_R = curr_state_R;
+	curr_state_R = HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin);
+	
+	if ((prev_state_L == GPIO_PIN_SET && curr_state_L == GPIO_PIN_RESET) || \
+		(prev_state_R == GPIO_PIN_SET && curr_state_R == GPIO_PIN_RESET)) {
+		direction_ind = -direction_ind;
+	}*/
 
   switch (chassis.ctrl_mode)
   {
@@ -158,31 +192,6 @@ void chassis_task(void const *argu)
   {
     memset(chassis.current, 0, sizeof(chassis.current));
   }
-	
-	/* GPIO debug */
-	if (HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin) == GPIO_PIN_RESET) {
-		GPIO_right_debug_js = 1000;
-	} else {
-		GPIO_right_debug_js = 5000;
-	}
-	
-	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET) {
-		GPIO_left_debug_js = 1000;
-	} else {
-		GPIO_left_debug_js = 5000;
-	}
-	
-	/* IR Restriction debug functions */
-	/*
-	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET)
-  {
-    memset(chassis.current, 0, sizeof(chassis.current));
-  }
-	
-	if (HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin) == GPIO_PIN_RESET)
-  {
-    memset(chassis.current, 0, sizeof(chassis.current));
-  }*/
 
 	
   memcpy(glb_cur.chassis_cur, chassis.current, sizeof(chassis.current));
@@ -248,6 +257,9 @@ static void chassis_twist_handler(void)
 void separate_gimbal_handler(void)
 {
   chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
+	if (using_rm == 0) {
+		chassis.vy = CONSTANT_SPEED * direction_ind;
+	}
   //chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
   //chassis.vw = rm.vw * CHASSIS_RC_MOVE_RATIO_R;
 }
@@ -256,6 +268,9 @@ void follow_gimbal_handler(void)
   chassis.position_ref = 0;
   
   chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
+	if (using_rm == 0) {
+		chassis.vy = CONSTANT_SPEED * direction_ind;
+	}
   //chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
 
   //if (chassis.follow_gimbal)

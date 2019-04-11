@@ -69,6 +69,9 @@ static ramp_t     pit_ramp = RAMP_GEN_DAFAULT;
 uint32_t gimbal_time_last;
 uint32_t gimbal_time_ms;
 
+int GPIO_left_debug_js;
+int GPIO_right_debug_js;
+
 
 /* for debug */
 int pid_yaw_out_js;
@@ -222,6 +225,23 @@ void gimbal_task(void const *argu)
 {
   gimbal_time_ms = HAL_GetTick() - gimbal_time_last;
   gimbal_time_last = HAL_GetTick();
+	
+	/* gpio debug stuff */
+	
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+	
+	if (HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin) == GPIO_PIN_RESET) {
+		GPIO_right_debug_js = 1000;
+	} else {
+		GPIO_right_debug_js = 5000;
+	}
+	
+	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET) {
+		GPIO_left_debug_js = 1000;
+	} else {
+		GPIO_left_debug_js = 5000;
+	}
+	
   
 //---------------------------------------------------
   archive_index++;  //This is a 2-D array that stores attitide information

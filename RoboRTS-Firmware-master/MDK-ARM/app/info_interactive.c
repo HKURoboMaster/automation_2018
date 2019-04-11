@@ -133,10 +133,10 @@ void get_shoot_info(void)
     
     case AUTO_CTRL_SHOT:
     {
-      //shoot.fric_wheel_run = 1;//pc_recv_mesg.shoot_control_data.fric_wheel_run;
+      shoot.fric_wheel_run = 1; //pc_recv_mesg.shoot_control_data.fric_wheel_run;
       shoot.fric_wheel_spd = speed_debug;//pc_recv_mesg.shoot_control_data.fric_wheel_spd;
       //shoot.shoot_cmd      = pc_recv_mesg.shoot_control_data.shoot_cmd;
-      //shoot.c_shoot_cmd    = pc_recv_mesg.shoot_control_data.c_shoot_cmd;
+      shoot.c_shoot_cmd    = pc_recv_mesg.shoot_control_data.c_shoot_cmd;
       
       if (rc.sw1 == RC_UP)
         shoot.fric_wheel_run = 1;
