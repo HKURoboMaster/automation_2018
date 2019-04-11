@@ -79,6 +79,24 @@
 #define SD_EXTI_Pin GPIO_PIN_15
 #define SD_EXTI_GPIO_Port GPIOE
 
+#define IR_LEFT_Pin GPIO_PIN_11 //yellow wire
+#define IR_LEFT_GPIO_Port GPIOH
+#define IR_RIGHT_Pin GPIO_PIN_15 //white wire
+#define IR_RIGHT_GPIO_Port GPIOD
+
+/*
+#define LASER_RETRACT_Pin GPIO_PIN_7
+#define LASER_RETRACT_GPIO_Port GPIOI
+#define VOLT3_EXTEND_Pin GPIO_PIN_6
+#define VOLT3_EXTEND_GPIO_Port GPIOI
+#define LASER_EXTEND_Pin GPIO_PIN_5
+#define LASER_EXTEND_GPIO_Port GPIOI
+#define VOLT3_RETRACT_Pin GPIO_PIN_2
+#define VOLT3_RETRACT_GPIO_Port GPIOI
+#define LED_Pin GPIO_PIN_14
+#define LED_GPIO_Port GPIOF
+*/
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

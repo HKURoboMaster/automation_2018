@@ -54,6 +54,9 @@ UBaseType_t chassis_stack_surplus;
 /* chassis task global parameter */
 chassis_t chassis;
 
+int GPIO_left_debug_js;
+int GPIO_right_debug_js;
+
 uint32_t chassis_time_last;
 int chassis_time_ms;
 extern TaskHandle_t can_msg_send_task_t;
@@ -155,7 +158,33 @@ void chassis_task(void const *argu)
   {
     memset(chassis.current, 0, sizeof(chassis.current));
   }
-  
+	
+	/* GPIO debug */
+	if (HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin) == GPIO_PIN_RESET) {
+		GPIO_right_debug_js = 1000;
+	} else {
+		GPIO_right_debug_js = 5000;
+	}
+	
+	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET) {
+		GPIO_left_debug_js = 1000;
+	} else {
+		GPIO_left_debug_js = 5000;
+	}
+	
+	/* IR Restriction debug functions */
+	/*
+	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET)
+  {
+    memset(chassis.current, 0, sizeof(chassis.current));
+  }
+	
+	if (HAL_GPIO_ReadPin(IR_RIGHT_GPIO_Port, IR_RIGHT_Pin) == GPIO_PIN_RESET)
+  {
+    memset(chassis.current, 0, sizeof(chassis.current));
+  }*/
+
+	
   memcpy(glb_cur.chassis_cur, chassis.current, sizeof(chassis.current));
   osSignalSet(can_msg_send_task_t, CHASSIS_MOTOR_MSG_SEND);
   
@@ -176,6 +205,7 @@ uint32_t twist_count;
 
 int16_t twist_period = TWIST_PERIOD/CHASSIS_PERIOD;
 int16_t twist_angle  = TWIST_ANGLE;
+
 static void chassis_twist_handler(void)
 {
   twist_count++;

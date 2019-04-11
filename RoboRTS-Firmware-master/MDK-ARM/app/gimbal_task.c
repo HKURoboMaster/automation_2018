@@ -91,12 +91,12 @@ int pit_speed_ref_js;
 
 /*-------------JerryEditedSTART----------------*/ //19.03.17
 gim_pid_debug_t debug_pit = {
-  -20, \
   0, \
-  -30, \
-  -20, \
-  -0.0015, \
-  40  //tested worked pid
+  0, \
+  0, \
+  0, \
+  0, \
+  0  //tested worked pid
 };
 
 gim_pid_debug_t debug_yaw = {
