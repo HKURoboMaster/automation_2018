@@ -38,5 +38,6 @@ extern infantry_structure_t glb_struct;
 static void get_global_last_info(void);
 
 void info_get_task(void const *argu);
+void LA_Debug(int cmd);
 
 #endif

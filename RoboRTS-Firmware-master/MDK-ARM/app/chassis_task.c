@@ -53,6 +53,19 @@ UBaseType_t chassis_stack_surplus;
 
 /* chassis task global parameter */
 chassis_t chassis;
+//=====Eric Edited Low Pass Filter=====
+struct Low_pass
+{
+	int previous_val1[4];  //The last current value
+	int previous_val2[4];  //The second last current value
+	int present_val[4]; //Present Current
+	float portion_val1; //The last current portion;	
+	float portion_val2; //The second last current portion
+	float portion_cur;  //This is present current portion
+	int first_time_flag[4]; //This is first time flag change to 1 if the loop has been running for once at least
+};
+
+struct Low_pass low_pass_chassis = {{0,0,0,0},{0,0,0,0},{0,0,0,0},0.3,0.3,0.4,{0,0,0,0}};
 
 uint32_t chassis_time_last;
 int chassis_time_ms;
@@ -61,7 +74,6 @@ void chassis_task(void const *argu)
 {
   chassis_time_ms = HAL_GetTick() - chassis_time_last;
   chassis_time_last = HAL_GetTick();
-  
 //    get_chassis_info();
 //    get_chassis_mode();
 
@@ -148,7 +160,20 @@ void chassis_task(void const *argu)
 
   for (int i = 0; i < 4; i++)
   {
-    chassis.current[i] = pid_calc(&pid_spd[i], chassis.wheel_spd_fdb[i], chassis.wheel_spd_ref[i]);
+		if(low_pass_chassis.first_time_flag[i] == 0)
+		{
+			low_pass_chassis.first_time_flag[i] = 1;
+			low_pass_chassis.present_val[i] = pid_calc(&pid_spd[i], chassis.wheel_spd_fdb[i], chassis.wheel_spd_ref[i]);
+			low_pass_chassis.previous_val1[i] = low_pass_chassis.present_val[i];
+			low_pass_chassis.previous_val2[i] = low_pass_chassis.present_val[i];
+		}
+		else
+		{
+			low_pass_chassis.previous_val2[i] = low_pass_chassis.previous_val1[i];
+			low_pass_chassis.previous_val1[i] = low_pass_chassis.present_val[i];
+			low_pass_chassis.present_val[i] = pid_calc(&pid_spd[i], chassis.wheel_spd_fdb[i], chassis.wheel_spd_ref[i]);
+		}
+    chassis.current[i] = low_pass_chassis.portion_cur*low_pass_chassis.present_val[i]+low_pass_chassis.portion_val1*low_pass_chassis.previous_val1[i]+low_pass_chassis.portion_val2*low_pass_chassis.previous_val2[i];
   }
   
   if (!chassis_is_controllable())

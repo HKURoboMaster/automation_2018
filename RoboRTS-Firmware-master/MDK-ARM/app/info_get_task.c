@@ -46,6 +46,7 @@ int hero_frame_ctrl_statusDOWN_js = 0;
 int hero_frame_ctrl_statusTOTOP_js = 0;
 int hero_frame_ctrl_statusTOBOTTOM_js = 0;
 int hero_frame_ctrl_statusFSM_js = 0;
+int debug_la_cmd;//Put this in debug  watch window
 #endif
 #endif
 uint32_t info_time_last;
@@ -72,6 +73,8 @@ void info_get_task(void const *argu)
         get_chassis_info();
         get_gimbal_info();
         get_shoot_info();
+				//Eric edited For hard ware testing.
+				LA_Debug(debug_la_cmd);
 				#ifdef HERO
 					get_frame_info();
 					send_linear_actuator_mesg(1);
@@ -123,5 +126,27 @@ static void get_global_last_info(void)
   glb_sw.last_sw1 = rc.sw1;
   glb_sw.last_sw2 = rc.sw2;
   glb_sw.last_wh  = rc.ch7;
+}
+
+void LA_Debug(int cmd) //Bottom control test
+{
+	if(cmd==0) //Stop Motion
+	{
+		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
+	}
+	else if(cmd==1) //Raise
+	{
+		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_SET);
+	}
+	else if(cmd == 2) //Retraction
+  {
+		HAL_GPIO_WritePin(GPIOH, LA12_1_Pin|LA34_1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOH, LA12_0_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(LA34_0_GPIO_Port, LA34_0_Pin, GPIO_PIN_RESET);
+	}		
 }
 
