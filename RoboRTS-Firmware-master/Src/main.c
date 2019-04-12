@@ -71,6 +71,7 @@
 #include "imu_task.h"
 #include "bsp_imu.h"
 #include "bsp_io.h"
+#include "info_interactive.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -117,7 +118,7 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+	MX_GPIO_Init();
   MX_DMA_Init();
   MX_SDIO_SD_Init();
   MX_CAN1_Init();
@@ -127,7 +128,7 @@ int main(void)
   MX_TIM3_Init();
   MX_CAN2_Init();
   MX_TIM4_Init();
-  MX_TIM5_Init();
+  //MX_TIM5_Init();
   MX_TIM8_Init();
   MX_TIM12_Init();
   MX_USART1_UART_Init();

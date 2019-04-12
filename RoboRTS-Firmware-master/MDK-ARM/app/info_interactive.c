@@ -633,11 +633,17 @@ void get_frame_info(void)
 	#endif
 	/*Step-3: generate the output*/
 	if(frame_ctrl.status==CONTIN_UP || frame_ctrl.status==UP)
+	{
 		frame_ctrl.output = 1;
+	}
 	else if(frame_ctrl.status==CONTIN_DOWN || frame_ctrl.status==DOWN)
+	{
 		frame_ctrl.output = -1;
+	}
 	else
+	{
 		frame_ctrl.output = 0;
+	}
 }
 
 #ifdef HERO

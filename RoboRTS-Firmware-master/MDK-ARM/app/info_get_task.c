@@ -74,7 +74,7 @@ void info_get_task(void const *argu)
         get_shoot_info();
 				#ifdef HERO
 					get_frame_info();
-					send_linear_actuator_mesg(1);
+					send_linear_actuator_mesg(frame_ctrl.output);
 					#ifdef HERO_FRAME_JSDEBUG
 						hero_frame_ctrl_output_js = frame_ctrl.output;
 						hero_frame_ctrl_statusUP_js = frame_ctrl.signal[UP];
