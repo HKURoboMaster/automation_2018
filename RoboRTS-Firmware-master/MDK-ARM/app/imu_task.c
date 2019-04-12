@@ -325,6 +325,8 @@ static void imu_AHRS_update(void)
 }
 
 int yaw_a_js;
+int pit_a_js;
+int roll_a_js;
 static void imu_attitude_update(void)
 {
   imu.rol = atan2(2*q2*q3 + 2*q0*q1, -2*q1*q1 - 2*q2*q2 + 1)* 57.3; // roll       -pi----pi
@@ -340,15 +342,15 @@ static void imu_attitude_update(void)
   atti.last_yaw = imu.yaw;
   
   atti.yaw   = imu.yaw + atti.yaw_cnt*360;
-  atti.pitch = imu.rol;
+  atti.pitch = -imu.rol;
   atti.roll  = imu.pit;
-  yaw = (int)atti.yaw*1000;
-	pit = (int)atti.pitch*1000;
-	roll = (int)atti.roll*1000;
+  
   gim.sensor.pit_gyro_angle = atti.pitch;
-  gim.sensor.yaw_gyro_angle = -atti.yaw;
+  gim.sensor.yaw_gyro_angle = atti.yaw;
   
   yaw_a_js = atti.yaw;
+	pit_a_js = atti.pitch;
+	roll_a_js = atti.roll;
 }
 
 void imu_param_init(void)
