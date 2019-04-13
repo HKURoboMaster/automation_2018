@@ -235,7 +235,7 @@ static void fric_wheel_ctrl(void)
   int speed_debug = 1130;
 
 #elif (INFANTRY_NUM == INFANTRY_3)
-  int speed_debug = 200; //17.5
+  int speed_debug = 160; //17.5
 
 #elif (INFANTRY_NUM == INFANTRY_4)
   int speed_debug = 1130;//16.5

@@ -61,7 +61,7 @@
 
 /**************************shoot  setting********************************/
 /* shoot speed */
-#define DEFAULT_FRIC_WHEEL_SPEED 200 //maximum value is 200
+#define DEFAULT_FRIC_WHEEL_SPEED 160 //maximum value is 200
 /* shoot frequence */
 #define TRIGGER_MOTOR_SPEED      2000 
 

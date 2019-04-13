@@ -95,7 +95,7 @@
 	#define LA34_1_Pin GPIO_PIN_10
 	#define LA34_1_GPIO_Port GPIOH
 
-	#define LA34_0_Pin GPIO_PIN_15
+	#define LA34_0_Pin GPIO_PIN_14
 	#define LA34_0_GPIO_Port GPIOD
 #endif
 /* USER CODE END Private defines */
