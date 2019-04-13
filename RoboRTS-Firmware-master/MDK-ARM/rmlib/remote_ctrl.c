@@ -148,7 +148,7 @@ void remote_ctrl_shoot_hook(void)
 
 void remote_ctrl_hero_frame(void)
 {
-	if(glb_sw.last_sw1 == RC_MI && rc.sw1 == RC_DN)
+	if(glb_sw.last_sw1 == RC_MI && rc.sw1 == RC_DN && rc.sw2==RC_UP)
 	{
 		if(frame_ctrl.status == BOTTOM_STAY)
 		{

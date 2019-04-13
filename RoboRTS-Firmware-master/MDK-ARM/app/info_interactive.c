@@ -637,7 +637,7 @@ void get_frame_info(void)
 	{
 		frame_ctrl.output = 1;
 	}
-	else if(frame_ctrl.status==CONTIN_DOWN || frame_ctrl.status==DOWN)
+	else if(frame_ctrl.status==CONTIN_DOWN || frame_ctrl.status==DOWN || frame_ctrl.status == OFF)
 	{
 		frame_ctrl.output = -1;
 	}
