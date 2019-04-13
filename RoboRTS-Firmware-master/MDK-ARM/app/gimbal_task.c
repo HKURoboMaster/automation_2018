@@ -459,7 +459,7 @@ void pc_position_ctrl_handler(void)
   gim.pid.pit_angle_fdb = gim.sensor.pit_relative_angle;
   gim.pid.yaw_angle_fdb = gim.sensor.yaw_relative_angle;
   
-  gim.pid.yaw_angle_ref += pc_recv_mesg.gimbal_control_data.yaw_ref * CAMERA_TO_MCU_TRANSMIT_RATIO;;
+  gim.pid.yaw_angle_ref += pc_recv_mesg.gimbal_control_data.yaw_ref * CAMERA_TO_MCU_TRANSMIT_RATIO;
   gim.pid.pit_angle_ref += pc_recv_mesg.gimbal_control_data.pit_ref*CAMERA_TO_MCU_TRANSMIT_RATIO;
   
   VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
