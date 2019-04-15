@@ -93,25 +93,28 @@ int pit_speed_ref_js;
 /*-------------EricEditedSTART----------------*/ //19.03.03
 
 /*-------------JerryEditedSTART----------------*/ //19.03.17
+
+/*-------------MarcoEditedSTART----------------*/ //15.04.17
 gim_pid_debug_t debug_pit = {
+  8, \
+  0, \
+  0, \
   10, \
-  0, \
-  0, \
-  4, \
   0, \
   0  //tested worked pid
 };
 
 gim_pid_debug_t debug_yaw = {
-  10, \
+  20.0, \
   0.0, \
   0, \
-  4, \
+  20, \
   0, \
   1
 };
 
 low_pass_t debug_lowpass = {0.4,0.4,0.2};
+/*-------------MarcoEditedEND----------------*/
 /*-------------JerryEditedEND----------------*/
 
 #ifdef DEBUG_GIM_PID

@@ -57,9 +57,9 @@ UBaseType_t chassis_stack_surplus;
 chassis_t chassis;
 
 /* set this to 0 if not using rm */
-int using_rm = 1;
+int using_rm = 0;
 
-int direction_ind = 1;
+int direction_ind = -1;
 GPIO_PinState prev_state_L = GPIO_PIN_SET;
 GPIO_PinState curr_state_L = GPIO_PIN_SET;
 GPIO_PinState prev_state_R = GPIO_PIN_SET;
@@ -78,7 +78,19 @@ void chassis_task(void const *argu)
 	
 	/* GPIO debug in gimbal_task.c */
 	
-	/* IR Restriction debug functions */ 
+	/*Position to Position movement function*/
+	if (pc_send_mesg.chassis_information.y_position>0)
+  {
+		direction_ind = -1;
+    //memset(chassis.current, 0, sizeof(chassis.current));
+  }
+	
+	if (pc_send_mesg.chassis_information.y_position<-200) //200 is the distance travelled
+  {
+		direction_ind = 1;
+    //memset(chassis.current, 0, sizeof(chassis.current));
+	}
+	/* IR Restriction debug functions */ /*
 	if (HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin) == GPIO_PIN_RESET)
   {
 		direction_ind = 1;
@@ -90,7 +102,7 @@ void chassis_task(void const *argu)
 		direction_ind = -1;
     //memset(chassis.current, 0, sizeof(chassis.current));
   }
-	
+	*/
 	/* IR reverse direction functions */ /*
 	prev_state_L = curr_state_L;
 	curr_state_L = HAL_GPIO_ReadPin(IR_LEFT_GPIO_Port, IR_LEFT_Pin);
