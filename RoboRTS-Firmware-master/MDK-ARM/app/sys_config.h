@@ -123,8 +123,10 @@
 #define PIT_MOTO_POSITIVE_DIR  -1.0f
 /* the positive direction of yaw axis motor */
 #define YAW_MOTO_POSITIVE_DIR  1.0f
-/* the positive direction of tirgger motor */
+/* the positive direction of trigger motor */
 #define TRI_MOTO_POSITIVE_DIR  1.0f
+/* the ratio of usb transmit and gimbal control frequency */
+#define CAMERA_TO_MCU_TRANSMIT_RATIO 0.002
 
 /***********************hero framework**************************************/
 #define HERO_FRAME_SPEED			200
