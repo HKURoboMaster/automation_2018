@@ -1,0 +1,135 @@
+struct gim
+       gim.ctrl_mod
+init_mode_handler()
+no_action_handler()
+close_loop_handler()
+gimbal_patrol_handler()
+pc_position_ctrl_handler()
+pc_relative_ctrl_handler()
+pid_calc
+gimbal_is_controllable()
+
+target_speed_calc
+
+----------------------------------
+gimbal_t: struct for gimbal pid, states and flags
+	enum----ctrl_mode & last_ctrl_mode
+	gimbal_sensor_t----sensot: for the value read by the gyro and the encoder
+	float----ecd/yaw_offset_angle: to offset the original angle
+	gim_pid_t----pid: for pid feedback and reference
+	no_action_t----input: storing the no-action flag and time
+	int32_t----pit/yaw_center_offset_angle: read from flash, for self-detection
+----------------------------------
+chassis_t: struct for chassis pid, states and flags
+	follow_gimbal
+	//
+----------------------------------
+rc_ctrl_t: struct for control signals from rc
+	float----vx/vy/vw/pitch/yaw
+----------------------------------
+rc_info_t: struct for raw rc message
+----------------------------------
+kb_ctrl_t: struct for control signals from kb, including the same float numbers as the rc_ctrl_t, plus flags for special function implemetation and control state switch
+	//TODO: add details into here
+----------------------------------
+shoot
+	//TODO
+----------------------------------
+speed_calc_data
+	//TODO
+----------------------------------
+init_mode_handler(): initialization and then switch to the default mode----Gimbal_Follow_Zgyro
+			This function will fetch the feedback angle from the IMU module and then set the off set angle to be current angle.
+no_action_handler(): check whether the machine should switch out of this mode and then jump out/stay in
+			stay at the current position
+close_loop_handler(): set the yaw/pitch signal from the rm and km in the same time
+			if in dodge mode: 
+				get the yaw signal both from the rm and km, limit the angleInBetween with in +-15 degree
+			else:
+				get the yaw signal both from the rm and km, limit the angleInBetween with in +-50 degree
+			set the pitch signal both from the rm and km
+pc_position_ctrl_handler(): PC passes the absolute target angle to the gimbal
+pc_relative_ctrl_handler(): RC passes the relative target angle to the gimbal
+
+NOTE: the above two methods is chosen according to the position of camera for PC
+if the camera is fixed on the gimbal, it should be in the pc_position_ctrl_handler mode
+otherwise, in pc_relative_ctrl_handler mode
+In the relative_ctrl mode, the speed should be calculated based on the time. If the time between signals is more than 2 sec, it won't rotate; otherwise, it will calculatet the speed with the message from PC and smooth it with Kalman filter. 
+
+gimbal_patrol_handler(): gimbal swing to right and left; thus, the operator can scan the surroudings
+
+target_speed_calc(): to calculate the speed of the gimbal rotation when the PC sends relative angle. The calculation is based on time and the previous angle signal. The algorithm is simply the average angle change over time
+
+------------------------------------
+chassis_task()
+	dodge_mode: if gimbal is in PC_Realitive mode or in Gimbal_Follow_Zgyro mode, then: chassis_twist_handler()
+		    else: stay stick
+	auto_follow_gimbal: get the x and y moving message from the PC and then use PID to rotate so that G-C in same direction
+	auto_seperate_gimbal: get the x and y and rotation signal from the PC
+	chassis_stop: chassis_stop_handler()
+	manual_sperate_gimbal: sperate_gimbal_handler()
+	manual_follow_gimbal: follow_gimbal_handler()
+	-----
+	then decompose the motor rotation velocities
+	-----
+	then pid control will be conducted
+	-----
+------------------------------------
+chassis_stop_handler()
+	set all velocities to be 0
+------------------------------------
+chassis_twist_handler()
+	chassis will twist in situ
+------------------------------------
+sperate_gimbal_handler()
+	using rm and km for vx and vy ref
+	using rm for vw(rotation)
+------------------------------------
+follow_gimbal_handler()
+	using rm and km for vx and vy
+	using pid for vw(rotaiton) when the chassis.follow_gimbal is true
+------------------------------------
+info_get_task()
+	this function will call get info function for each component respectively and then measure the chassis position
+	inside it: 
+		get_chassis_info() and  get_gimbal_info() will fetch the components info and store them in the chassis or gimbal struct
+		keyboard_global_hook() will detect the action of the mouse.l and mouse.r and arouse the FSM to deal with the actions
+		get_global_last_hook() will store the previous action of sw1 and sw2
+		get_shoot_info() will control the friction wheel rotation according to the shoot state
+------------------------------------
+chassis_position_measure()
+	calculate the position data of the chassis, the data will be used to generate precise gimbal info
+------------------------------------
+get_struct_info()
+	set the parameter for glb_struct from PC or 
+	set the parameter for glb_struct by default
+------------------------------------
+infantry_struct_t glb_struct
+	storing the parameters of the robot
+------------------------------------
+NOTE: the interfaces for data tranmision, including the transmission through the UART and CAN are implemented in info_interactive.c
+------------------------------------
+trigger_t trig
+------------------------------------
+shoot_t shoot
+------------------------------------
+shoot_task()
+	control the friction wheels and the trigger motor and detect the trigger key action
+------------------------------------
+block_bullet_handler()
+	stop the shooting for a while
+------------------------------------
+shoot_bullet_handler()
+	detect the trigger key action
+	compare the current action with the previous one and then give the shoot.cmd accordingly
+------------------------------------
+fric_wheel_handler()
+	control the friction wheel and the laser together
+------------------------------------
+#TODO: the remote control dealler, the keyboard hook and the modeswitch functions
+------------------------------------
+------------------------------------
+------------------------------------
+------------------------------------
+------------------------------------
+------------------------------------
