@@ -49,7 +49,7 @@ typedef enum
   TRIG_ONE_DONE   = 3,
 } trig_state_e;
 
-typedef __packed struct
+typedef struct __packed
 {
   /* shoot task relevant param */
   shoot_mode_e ctrl_mode;
@@ -63,13 +63,13 @@ typedef __packed struct
 } shoot_t;
 
 //Eric Edited
-typedef __packed struct
+typedef struct __packed
 {
 	uint8_t funct;
 	uint16_t servo_debug;
 }maga_t;
 
-typedef __packed struct
+typedef struct __packed
 {
   /* trigger motor param */
   int32_t   spd_ref;

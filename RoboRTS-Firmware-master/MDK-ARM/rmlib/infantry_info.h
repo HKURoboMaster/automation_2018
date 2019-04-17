@@ -106,7 +106,7 @@ typedef enum
 /** 
   * @brief  chassis information
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t ctrl_mode;      /* chassis control mode */
   float   gyro_palstance; /* chassis palstance(degree/s) from gyroscope */
@@ -122,7 +122,7 @@ typedef __packed struct
 /** 
   * @brief  gimbal information
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t ctrl_mode;          /* gimbal control mode */
   float   pit_relative_angle; /* pitch angle(degree) relative to the gimbal center */
@@ -136,7 +136,7 @@ typedef __packed struct
 /** 
   * @brief  shoot information
   */
-typedef __packed struct
+typedef struct __packed
 {
   int16_t remain_bullets;  /* the member of remain bullets */
   int16_t shoot_bullets;    /* the member of bullets that have been shot */
@@ -146,7 +146,7 @@ typedef __packed struct
 /** 
   * @brief  infantry error information
   */
-typedef __packed struct
+typedef struct __packed
 {
   bottom_err_e err_sta;                 /* bottom error state */
   bottom_err_e err[ERROR_LIST_LENGTH];  /* device error list */
@@ -155,7 +155,7 @@ typedef __packed struct
 /** 
   * @brief  infantry structure config response
   */
-typedef __packed struct
+typedef struct __packed
 {
   struct_config_e chassis_config;
   struct_config_e gimbal_config;
@@ -164,7 +164,7 @@ typedef __packed struct
 /** 
   * @brief  gimbal calibrate response
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t type;     //0x01 success 0x00 fault
   int16_t yaw_offset;
@@ -174,7 +174,7 @@ typedef __packed struct
 /** 
   * @brief  remote control information
   */
-typedef __packed struct
+typedef struct __packed
 {
   /* rocker channel information */
   int16_t ch1;
@@ -187,7 +187,7 @@ typedef __packed struct
   uint8_t sw1;
   uint8_t sw2;
   /* mouse movement and button information */
-  __packed struct
+  struct __packed
   {
     int16_t x;
     int16_t y;
@@ -200,7 +200,7 @@ typedef __packed struct
   __packed union
   {
     uint16_t key_code;
-    __packed struct 
+    struct __packed 
     {
       uint16_t W:1;
       uint16_t S:1;
@@ -225,14 +225,14 @@ typedef __packed struct
 /** 
   * @brief  bottom software version information
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t num[4];
 } version_info_t;
 
 /********** the information from computer **********/
 
-typedef __packed struct
+typedef struct __packed
 {
   int16_t x_offset;   /* offset(mm) relative to the x-axis of the chassis center */
   int16_t y_offset;   /* offset(mm) relative to the y-axis of the chassis center */
@@ -242,7 +242,7 @@ typedef __packed struct
 /** 
   * @brief  chassis control information
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t          ctrl_mode; /* chassis control mode */
   int16_t          x_spd;     /* x-axis move speed(mm/s) of chassis */
@@ -253,7 +253,7 @@ typedef __packed struct
 /** 
   * @brief  gimbal control information
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint32_t time;
   uint8_t  ctrl_mode;    /* gimbal control mode */
@@ -269,7 +269,7 @@ typedef __packed struct
 /** 
   * @brief  shoot control information
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t  shoot_cmd;      /* single shoot command */
   uint8_t  c_shoot_cmd;    /* continuous shoot command */
@@ -280,7 +280,7 @@ typedef __packed struct
 /** 
   * @brief  robot system error level
   */
-typedef __packed struct
+typedef struct __packed
 {
   err_level_e err_level; /* the error level is included in err_level_e enumeration */
 } global_err_level_t;
@@ -288,7 +288,7 @@ typedef __packed struct
 /** 
   * @brief  infantry structure configuration information
   */
-typedef __packed struct
+typedef struct __packed
 {
   struct_config_e  chassis_config;  /* chassis structure config state */
   uint16_t         wheel_perimeter; /* the perimeter(mm) of wheel */
@@ -302,7 +302,7 @@ typedef __packed struct
 /** 
   * @brief  gimbal calibrate command
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t type;        /* 0x01 calibrate gimbal center, 0x02 calibrate camera */
 } cali_cmd_t;
