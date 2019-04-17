@@ -41,7 +41,7 @@
 /** 
   * @brief  frame header structure definition
   */
-typedef __packed struct
+typedef struct __packed
 {
   uint8_t  sof;
   uint16_t data_length;
