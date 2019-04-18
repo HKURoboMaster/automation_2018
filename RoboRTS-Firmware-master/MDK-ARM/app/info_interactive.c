@@ -357,6 +357,9 @@ void no_cali_data_handler(void)
     send_gimbal_motor_ctrl_message(glb_cur.gimbal_cur);
     send_chassis_motor_ctrl_message(glb_cur.chassis_cur);
     
+    turn_on_laser();
+    osDelay(100);
+    turn_off_laser();
     osDelay(100);
   }
 }
