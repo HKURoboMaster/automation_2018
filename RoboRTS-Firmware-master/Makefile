@@ -4,7 +4,7 @@ all:
 	./build.sh
 
 clean:
-	rm -rf output.elf output.map output.hex *.o
+	rm -rf output.elf output.map output.hex build/*.o
 
 flash:
 	sudo /opt/SEGGER/JLink/JLinkExe -device STM32F427II -if SWD -speed 4000 
