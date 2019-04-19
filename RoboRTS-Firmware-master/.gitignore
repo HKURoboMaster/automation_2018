@@ -35,3 +35,6 @@ JLinkLog.txt
 *.sct
 *.uvguix.*
 *.hex
+
+build/
+output.*
