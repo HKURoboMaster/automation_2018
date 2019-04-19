@@ -24,7 +24,7 @@ do
 done
 wait
 echo "==> Linking";
-"$TOOLCHAIN_PREFIX"gcc build/*.o -g -O0 -march=armv7e-m -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -lm -lc -lgcc -ffunction-sections -fdata-sections -specs=nano.specs -specs=nosys.specs -Wl,--gc-sections,-Tstm32.ld,-Map,output.map,-ooutput.elf,--no-wchar-size-warning
+"$TOOLCHAIN_PREFIX"gcc build/*.o -g -O0 -march=armv7e-m -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -lm -lc -lgcc -ffunction-sections -fdata-sections -specs=nosys.specs -Wl,--gc-sections,-Tstm32.ld,-Map,output.map,-ooutput.elf,--no-wchar-size-warning
 echo "==> Generating HEX";
 "$TOOLCHAIN_PREFIX"objcopy -O ihex output.elf output.hex
 echo "==> Generating BIN";
