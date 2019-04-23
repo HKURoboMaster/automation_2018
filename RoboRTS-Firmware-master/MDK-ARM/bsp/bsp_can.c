@@ -154,21 +154,8 @@ void encoder_data_handler(moto_measure_t* ptr, CAN_HandleTypeDef* hcan)
   /* total angle, unit is degree */
   ptr->total_angle = ptr->total_ecd / ENCODER_ANGLE_RATIO;
   
-#ifdef CHASSIS_EC60
-  int32_t temp_sum = 0;
-  ptr->rate_buf[ptr->buf_cut++] = ptr->ecd_raw_rate;
-  if (ptr->buf_cut >= FILTER_BUF)
-    ptr->buf_cut = 0;
-  for (uint8_t i = 0; i < FILTER_BUF; i++)
-  {
-    temp_sum += ptr->rate_buf[i];
-  }
-  ptr->filter_rate = (int32_t)(temp_sum/FILTER_BUF);
-  ptr->speed_rpm   = (int16_t)(ptr->filter_rate * 7.324f);
-#else
   ptr->speed_rpm     = (int16_t)(hcan->pRxMsg->Data[2] << 8 | hcan->pRxMsg->Data[3]);
   ptr->given_current = (int16_t)(hcan->pRxMsg->Data[4] << 8 | hcan->pRxMsg->Data[5]);
-#endif
 
 }
 

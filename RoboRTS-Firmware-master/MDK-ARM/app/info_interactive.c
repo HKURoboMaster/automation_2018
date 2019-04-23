@@ -328,7 +328,7 @@ void get_gimbal_info(void)
   //the Z axis(yaw) of gimbal coordinate system corresponds to the IMU Z axis
   gim.sensor.yaw_palstance = mpu_data.gz / 16.384f; //unit: dps
   //the Y axis(pitch) of gimbal coordinate system corresponds to the IMU -X axis
-  gim.sensor.pit_palstance = -mpu_data.gx / 16.384f; //unit: dps
+  gim.sensor.pit_palstance = -mpu_data.gy / 16.384f; //unit: dps
 
   /* get remote and keyboard gimbal control information */
   keyboard_gimbal_hook();

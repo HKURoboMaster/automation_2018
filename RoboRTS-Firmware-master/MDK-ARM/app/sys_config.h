@@ -126,7 +126,7 @@
 /* the positive direction of trigger motor */
 #define TRI_MOTO_POSITIVE_DIR  1.0f
 /* the ratio of usb transmit and gimbal control frequency */
-#define CAMERA_TO_MCU_TRANSMIT_RATIO 0.002
+#define CAMERA_TO_MCU_TRANSMIT_RATIO 0.002f
 
 /***********************hero framework**************************************/
 #define HERO_FRAME_SPEED			200

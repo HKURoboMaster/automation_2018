@@ -73,7 +73,7 @@ uint32_t gimbal_time_ms;
 /* for debug */
 int pid_yaw_out_js;
 int pid_pitch_out_js;
-int pid_yaw_final_out_js;
+int pid_pit_final_out_js;
 
 int pc_debug;
 
@@ -91,19 +91,25 @@ int pit_speed_ref_js;
 
 /*-------------JerryEditedSTART----------------*/ //19.03.17
 gim_pid_debug_t debug_pit = {
-  -20, \
+  0, \
+  0, \
+  0, \
+  0, \
+  0, \
+  0
+};
+/*-20, \
   0, \
   -30, \
   -20, \
   -0.0015, \
-  40  //tested worked pid
-};
-
+  40
+*/
 gim_pid_debug_t debug_yaw = {
-  -20.0, \
+  42.0, \
   0.0, \
   0.0, \
-  -60, \
+  -205, \
   0, \
   0
 };
@@ -279,7 +285,6 @@ void gimbal_task(void const *argu)
   pid_pit.p = debug_pit.kp;
 	pid_pit.i = debug_pit.ki;
 	pid_pit.d = debug_pit.kd;
-	 //test if it will die 
 	
 	pid_yaw.p = debug_yaw.kp;
 	pid_yaw.i = debug_yaw.ki;
@@ -299,7 +304,7 @@ void gimbal_task(void const *argu)
   pid_calc(&pid_yaw, gim.pid.yaw_angle_fdb, gim.pid.yaw_angle_ref);
   pid_calc(&pid_pit, gim.pid.pit_angle_fdb, gim.pid.pit_angle_ref);
   
-	pid_yaw.out = pid_yaw.out * (-1); // reverse pid here
+	//pid_yaw.out = pid_yaw.out * (-1); // reverse pid here
   gim.pid.yaw_spd_ref = pid_yaw.out;
 	pid_yaw_out_js = pid_yaw.out*1000;
 	
@@ -320,10 +325,10 @@ void gimbal_task(void const *argu)
 		previous = gim.pid.pit_spd_fdb;
 	
 	}
-  gim.pid.pit_spd_fdb = gim.sensor.pit_palstance*debug_lowpass.p0+debug_lowpass.p1*previous + debug_lowpass.p2*previous2;
+  gim.pid.pit_spd_fdb = gim.sensor.pit_palstance;//*debug_lowpass.p0+debug_lowpass.p1*previous + debug_lowpass.p2*previous2;
   pid_calc(&pid_yaw_spd, gim.pid.yaw_spd_fdb, gim.pid.yaw_spd_ref);
   pid_calc(&pid_pit_spd, gim.pid.pit_spd_fdb, gim.pid.pit_spd_ref);
-	pid_yaw_final_out_js = pid_yaw_spd.out * 1000;
+	pid_pit_final_out_js = pid_pit_spd.out * 1000;
 
   /* safe protect */
   if (gimbal_is_controllable())
@@ -341,13 +346,13 @@ void gimbal_task(void const *argu)
   
   yaw_angle_ref_js = gim.pid.yaw_angle_ref*1000;
   yaw_angle_fdb_js = gim.pid.yaw_angle_fdb*1000;
-  yaw_speed_ref_js = pid_yaw.out*1000;
-  yaw_speed_fdb_js = gim.sensor.yaw_palstance*1000;
+  yaw_speed_ref_js = gim.pid.yaw_spd_ref*1000;
+  yaw_speed_fdb_js = gim.pid.yaw_spd_fdb*1000;
 
   pit_angle_ref_js = gim.pid.pit_angle_ref*1000;
   pit_angle_fdb_js = gim.pid.pit_angle_fdb*1000;
-  pit_speed_ref_js = pid_pit.out*1000;
-  pit_speed_fdb_js = gim.sensor.pit_palstance*1000;
+  pit_speed_ref_js = gim.pid.pit_spd_ref*1000;
+  pit_speed_fdb_js = gim.pid.pit_spd_fdb*1000;
 	
   osSignalSet(can_msg_send_task_t, GIMBAL_MOTOR_MSG_SEND);
   osSignalSet(shoot_task_t, SHOT_TASK_EXE_SIGNAL);

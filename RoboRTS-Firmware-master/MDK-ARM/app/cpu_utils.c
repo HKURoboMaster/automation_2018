@@ -85,11 +85,11 @@ void vApplicationIdleHook(void)
         xIdleHandle = xTaskGetCurrentTaskHandle();
     }
 }
-
+ 
 /**
   * @brief  Application Idle Hook
   * @param  None
-  * @retval None
+  * @retval None 
   */
 void vApplicationTickHook(void)
 {

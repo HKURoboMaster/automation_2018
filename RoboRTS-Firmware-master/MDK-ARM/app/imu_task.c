@@ -340,8 +340,8 @@ static void imu_attitude_update(void)
   atti.last_yaw = imu.yaw;
   
   atti.yaw   = imu.yaw + atti.yaw_cnt*360;
-  atti.pitch = -imu.rol;
-  atti.roll  = imu.pit;
+  atti.pitch = -imu.pit;
+  atti.roll  = imu.rol;
   
   gim.sensor.pit_gyro_angle = atti.pitch;
   gim.sensor.yaw_gyro_angle = atti.yaw;
