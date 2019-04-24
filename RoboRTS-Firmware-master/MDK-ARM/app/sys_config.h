@@ -28,7 +28,7 @@
 /*************************chassis setting*******************************/
 /* remote mode chassis move speed limit */
 /* left and right speed (mm/s) */
-#define CHASSIS_RC_MAX_SPEED_X  2200.0f
+#define CHASSIS_RC_MAX_SPEED_X  2000.0f
 #define CHASSIS_RC_MOVE_RATIO_X 1.0f
 /* back and forward speed (mm/s) */
 #define CHASSIS_RC_MAX_SPEED_Y  2200.0f
@@ -40,10 +40,10 @@
 
 /* keyboard mode speed limit */
 /* left and right speed (mm/s) */
-#define CHASSIS_KB_MAX_SPEED_X  3000.0f 
+#define CHASSIS_KB_MAX_SPEED_X  2200.0f 
 #define CHASSIS_KB_MOVE_RATIO_X 1.0f
 /* back and forward speed (mm/s) */
-#define CHASSIS_KB_MAX_SPEED_Y  3000.0f
+#define CHASSIS_KB_MAX_SPEED_Y  2500.0f
 #define CHASSIS_KB_MOVE_RATIO_Y 1.0f
 
 /**************************gimbal setting*******************************/
