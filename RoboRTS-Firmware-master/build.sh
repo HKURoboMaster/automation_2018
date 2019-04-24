@@ -16,7 +16,7 @@ compile() {
     "$TOOLCHAIN_PREFIX"gcc -g -O0 -c $1 -o build/$(echo $1 | sed 's/\.[cs]$/.o/g' | rev | cut -d'/' -f1 | rev) $INCLUDE_FLAGS $DEFINE_FLAGS -march=armv7e-m -mcpu=cortex-m4 -mthumb -std=c11 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -finline-functions -ffunction-sections -fdata-sections
 }
 
-threads=$(nproc)
+threads=4
 for i in $(find . | grep '\.c$') ./MDK-ARM/startup_stm32f427xx.s;
 do
     ((counter=counter%threads)); ((counter++==0)) && wait
