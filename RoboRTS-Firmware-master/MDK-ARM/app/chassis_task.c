@@ -335,7 +335,7 @@ void chassis_param_init(void)
 #else
   for (int k = 0; k < 4; k++)
   {
-    PID_struct_init(&pid_spd[k], POSITION_PID, 0, 500, 4.5f, 0.05, 0); // 10000
+    PID_struct_init(&pid_spd[k], POSITION_PID, 8000, 500, 4.5f, 0.05, 0); // 10000
   }//8000
 #endif
   

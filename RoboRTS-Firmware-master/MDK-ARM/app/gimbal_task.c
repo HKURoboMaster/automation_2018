@@ -99,7 +99,7 @@ gim_pid_debug_t debug_pit = {
 };
 
 gim_pid_debug_t debug_yaw = {
-  42.0, \
+  20.0, \
   0.0, \
   0.0, \
   -80, \
