@@ -89,33 +89,25 @@ int pit_speed_fdb_js;
 int pit_speed_ref_js;
 /*-------------EricEditedSTART----------------*/ //19.03.03
 
-/*-------------JerryEditedSTART----------------*/ //19.03.17
 gim_pid_debug_t debug_pit = {
+  25, \
   0, \
   0, \
-  0, \
-  0, \
-  0, \
-  0
+  20, \
+  0.1, \
+  0.2
 };
-/*-20, \
-  0, \
-  -30, \
-  -20, \
-  -0.0015, \
-  40
-*/
+
 gim_pid_debug_t debug_yaw = {
   42.0, \
   0.0, \
   0.0, \
-  -205, \
+  -80, \
   0, \
   0
 };
 
 low_pass_t debug_lowpass = {0.4,0.4,0.2};
-/*-------------JerryEditedEND----------------*/
 
 #ifdef DEBUG_GIM_PID
 
@@ -591,21 +583,21 @@ void gimbal_param_init(void)
   
   /* pitch axis motor pid parameter */
   PID_struct_init(&pid_pit, POSITION_PID, 1000, 0,
-                  130, 1, 65); //
-  PID_struct_init(&pid_pit_spd, POSITION_PID, 6000, 3000,
-                  3.7, 0, 0);  //16
+                  130, 1, 65); 
+  PID_struct_init(&pid_pit_spd, POSITION_PID, 6000, 350,
+                  3.7, 0, 0);  //6000
 
   /* yaw axis motor pid parameter */
   PID_struct_init(&pid_yaw, POSITION_PID, 1000, 0,
-                  156.0, 1, 450.0); //
+                  156.0, 1, 450.0); //1000
   PID_struct_init(&pid_yaw_spd, POSITION_PID, 6000, 3000,
-                  30 , 0, 7.5);  //30 //7.5
+                  30 , 0, 7.5);  //6000
   
   /* bullet trigger motor pid parameter */
   PID_struct_init(&pid_trigger, POSITION_PID, 10000, 2000,
                   15, 0, 10);
-  PID_struct_init(&pid_trigger_spd, POSITION_PID, 8000, 3000,
-                  1.5, 0.1, 5); //1.5 0.1 5
+  PID_struct_init(&pid_trigger_spd, POSITION_PID, 0, 3000,
+                  1.5, 0.1, 5); //8000
                   
   kalman_filter_init(&yaw_kalman_filter, &yaw_kalman_filter_para);
   kalman_filter_init(&pitch_kalman_filter, &pitch_kalman_filter_para);

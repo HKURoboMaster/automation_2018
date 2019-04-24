@@ -262,6 +262,7 @@ static void imu_AHRS_update(void)
   mx = imu.mx;
   my = imu.my;
   mz = imu.mz;
+	
 
   now_update = HAL_GetTick(); //ms
   halfT =  ((float)(now_update - last_update) / 2000.0f);
@@ -278,7 +279,8 @@ static void imu_AHRS_update(void)
   mx = mx * norm;
   my = my * norm;
   mz = mz * norm;
-
+	
+	
   // compute reference direction of flux
   hx = 2.0f*mx*(0.5f - q2q2 - q3q3) + 2.0f*my*(q1q2 - q0q3) + 2.0f*mz*(q1q3 + q0q2);
   hy = 2.0f*mx*(q1q2 + q0q3) + 2.0f*my*(0.5f - q1q1 - q3q3) + 2.0f*mz*(q2q3 - q0q1);
@@ -293,7 +295,8 @@ static void imu_AHRS_update(void)
   wx = 2.0f*bx*(0.5f - q2q2 - q3q3) + 2.0f*bz*(q1q3 - q0q2);
   wy = 2.0f*bx*(q1q2 - q0q3) + 2.0f*bz*(q0q1 + q2q3);
   wz = 2.0f*bx*(q0q2 + q1q3) + 2.0f*bz*(0.5f - q1q1 - q2q2);  
-
+	
+	
   // error is sum of cross product between reference direction of fields and direction measured by sensors
   ex = (ay*vz - az*vy) + (my*wz - mz*wy);
   ey = (az*vx - ax*vz) + (mz*wx - mx*wz);
