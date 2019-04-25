@@ -54,7 +54,9 @@ typedef enum
   CALI_GIMBAL_NUM    = 2,
 } cali_gimbal_e;
 
-typedef __packed struct
+#pragma pack(push)
+#pragma pack(1)
+typedef struct
 {
   int32_t yaw_offset;
   int32_t pitch_offset;
@@ -62,7 +64,7 @@ typedef __packed struct
   uint8_t calied_done; //0x55:already calied
 } gim_cali_t;
 
-typedef __packed struct
+typedef struct
 {
   int16_t offset[3];   //x,y,z
   uint8_t cali_cmd;
@@ -70,12 +72,13 @@ typedef __packed struct
   char*   name;
 } imu_cali_t;
 
-typedef __packed struct
+typedef struct
 {
   uint32_t   firmware_version;
   gim_cali_t gim_cali_data[CALI_GIMBAL_NUM];
   imu_cali_t imu_cali_list[CALI_IMU_NUM];
 } cali_sys_t;
+#pragma pack(pop)
 
 extern cali_sys_t cali_param;
 

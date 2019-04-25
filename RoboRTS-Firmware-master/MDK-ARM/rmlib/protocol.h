@@ -38,16 +38,19 @@
 
 #define PROTOCAL_FRAME_MAX_SIZE  200
 
+#pragma pack(push)
+#pragma pack(1)
 /** 
   * @brief  frame header structure definition
   */
-typedef __packed struct
+typedef struct
 {
   uint8_t  sof;
   uint16_t data_length;
   uint8_t  seq;
   uint8_t  crc8;
 } frame_header_t;
+#pragma pack(pop)
 
 uint8_t verify_crc8_check_sum(uint8_t* pchMessage, uint16_t dwLength);
 uint8_t verify_crc16_check_sum(uint8_t* pchMessage, uint32_t dwLength);
