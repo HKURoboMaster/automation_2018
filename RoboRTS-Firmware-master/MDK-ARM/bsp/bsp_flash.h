@@ -61,6 +61,6 @@
 #define ADDR_FLASH_SECTOR_22 ((uint32_t)0x081C0000) /* Base @ of Sector 10, 128 Kbytes */
 #define ADDR_FLASH_SECTOR_23 ((uint32_t)0x081E0000) /* Base @ of Sector 11, 128 Kbytes */
 
-uint32_t GetSector(uint32_t Address);
+static uint32_t GetSector(uint32_t Address);
 uint8_t BSP_FLASH_Write(uint8_t* pbuff, uint32_t len);
 #endif
