@@ -20,7 +20,7 @@ threads=1
 if [ -x "$(command -v git)" ]; then
     threads=$(nproc)
 fi
-for i in $(find . | grep '\.c$') ./MDK-ARM/startup_stm32f427xx_gcc.s;
+for i in $(find . | grep '\.c$' | grep -v './Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c') ./MDK-ARM/startup_stm32f427xx_gcc.s;
 do
     ((counter=counter%threads)); ((counter++==0)) && wait
     compile $i &
