@@ -85,11 +85,18 @@ float pid_calc(pid_t *pid, float get, float set)
   pid->get = get;
   pid->set = set;
   pid->err[NOW] = set - get;
+  if (pid->pid_mode == CIRCULAR_PID)
+  {
+    if (pid->err[NOW] > 180.0f)
+      pid->err[NOW] = 360.0f - pid->err[NOW];
+    else if (pid->err[NOW] < -180.0f)
+      pid->err[NOW] = pid->err[NOW] + 360.0f;
+  }
 
   if ((pid->input_max_err != 0) && (fabs(pid->err[NOW]) > pid->input_max_err))
       return 0;
 
-  if (pid->pid_mode == POSITION_PID) //position PID
+  if (pid->pid_mode == POSITION_PID || pid->pid_mode == CIRCULAR_PID) //position PID or circular PID
   {
       pid->pout = pid->p * pid->err[NOW];
       pid->iout += pid->i * pid->err[NOW];

@@ -36,6 +36,7 @@ enum
   NOW,
   POSITION_PID,
   DELTA_PID,
+  CIRCULAR_PID,
 };
 typedef struct pid_t
 {

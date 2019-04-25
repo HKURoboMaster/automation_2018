@@ -459,7 +459,9 @@ void pc_position_ctrl_handler(void)
   gim.pid.yaw_angle_ref += pc_recv_mesg.gimbal_control_data.yaw_ref * CAMERA_TO_MCU_TRANSMIT_RATIO;
   gim.pid.pit_angle_ref += pc_recv_mesg.gimbal_control_data.pit_ref*CAMERA_TO_MCU_TRANSMIT_RATIO;
   
-  VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
+  //VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
+  while(gim.pid.yaw_angle_ref > 180.0f) gim.pid.yaw_angle_ref -= 360.0f;
+  while(gim.pid.yaw_angle_ref < -180.0f) gim.pid.yaw_angle_ref += 360.0f;
   VAL_LIMIT(gim.pid.pit_angle_ref, PIT_ANGLE_MIN, PIT_ANGLE_MAX);
 }
 
@@ -588,7 +590,7 @@ void gimbal_param_init(void)
                   3.7, 0, 0);  //6000
 
   /* yaw axis motor pid parameter */
-  PID_struct_init(&pid_yaw, POSITION_PID, 1000, 0,
+  PID_struct_init(&pid_yaw, CIRCULAR_PID, 1000, 0,
                   156.0, 1, 450.0); //1000
   PID_struct_init(&pid_yaw_spd, POSITION_PID, 6000, 3000,
                   30 , 0, 7.5);  //6000
