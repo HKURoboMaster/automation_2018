@@ -71,13 +71,17 @@ void chassis_task(void const *argu)
   {
     case DODGE_MODE:
     {
-      if ((gim.ctrl_mode == GIMBAL_RELATIVE_MODE) || (gim.ctrl_mode == GIMBAL_FOLLOW_ZGYRO))
+      if (gim.ctrl_mode == GIMBAL_FOLLOW_ZGYRO) //controllable by rc
       {
 				chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
 				chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
         chassis_twist_handler();//re-calculate the x and y speed ref basing on the current position
 																//and calculate the rotation speed
       }
+			else if(gim.ctrl_mode == GIMBAL_RELATIVE_MODE) //uncontrollable by rc
+			{
+				chassis_twist_handler();
+			}
       else
       {
         chassis.vx = 0;
@@ -215,8 +219,10 @@ static void chassis_twist_handler(void)
     
   }
   chassis.position_ref = -twist_sign*twist_angle*cos(2*PI/twist_period*twist_count) + twist_side*twist_angle;
-  chassis.vx = chassis.vx * cos(gim.sensor.yaw_relative_angle) - chassis.vy * sin(gim.sensor.yaw_relative_angle);
-	chassis.vy = chassis.vx * sin(gim.sensor.yaw_relative_angle) + chassis.vy * cos(gim.sensor.yaw_relative_angle);
+	float vx = chassis.vx;
+	float vy = chassis.vy;
+  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
+	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
 }
 void separate_gimbal_handler(void)
