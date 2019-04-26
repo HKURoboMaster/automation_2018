@@ -38,3 +38,4 @@ JLinkLog.txt
 output.*
 .DS_Store
 .vscode
+*.swp
