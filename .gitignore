@@ -35,7 +35,9 @@ JLinkLog.txt
 *.sct
 *.uvguix.*
 *.hex
-output.*
+rm_infantry.elf
+rm_infantry.hex
+rm_infantry.map
 .DS_Store
 .vscode
 *.swp
