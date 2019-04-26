@@ -36,7 +36,7 @@ void abs_limit(float *a, float ABS_MAX)
 }
 
 static void pid_param_init(
-    pid_t*   pid,
+    PID_t*   pid,
     uint32_t mode,
     uint32_t maxout,
     uint32_t intergral_limit,
@@ -60,7 +60,7 @@ static void pid_param_init(
   * @param[in] p/i/d: pid parameter
   * @retval    none
   */
-static void pid_reset(pid_t *pid, float kp, float ki, float kd)
+static void pid_reset(PID_t *pid, float kp, float ki, float kd)
 {
   pid->p = kp;
   pid->i = ki;
@@ -80,7 +80,7 @@ static void pid_reset(pid_t *pid, float kp, float ki, float kd)
   * @param[in] set: target value
   * @retval    pid calculate output 
   */
-float pid_calc(pid_t *pid, float get, float set)
+float pid_calc(PID_t *pid, float get, float set)
 {
   pid->get = get;
   pid->set = set;
@@ -131,7 +131,7 @@ float pid_calc(pid_t *pid, float get, float set)
   * @retval    none
   */
 void PID_struct_init(
-    pid_t*   pid,
+    PID_t*   pid,
     uint32_t mode,
     uint32_t maxout,
     uint32_t intergral_limit,
@@ -147,14 +147,14 @@ void PID_struct_init(
   pid->f_pid_reset(pid, kp, ki, kd);
 }
 
-pid_t pid_yaw           = {0};
-pid_t pid_pit           = {0};
-pid_t pid_yaw_spd     = {0};
-pid_t pid_pit_spd     = {0};
-pid_t pid_spd[4]        = {0};
-pid_t pid_chassis_angle = {0};
-pid_t pid_trigger       = {0};
-pid_t pid_trigger_spd = {0};
-pid_t pid_imu_tmp       = {0};
+PID_t pid_yaw           = {0};
+PID_t pid_pit           = {0};
+PID_t pid_yaw_spd     = {0};
+PID_t pid_pit_spd     = {0};
+PID_t pid_spd[4]        = {0};
+PID_t pid_chassis_angle = {0};
+PID_t pid_trigger       = {0};
+PID_t pid_trigger_spd = {0};
+PID_t pid_imu_tmp       = {0};
 
 

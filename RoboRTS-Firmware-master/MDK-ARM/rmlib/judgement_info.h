@@ -50,12 +50,13 @@ typedef enum
   CLIENT_TO_ROBOT_ID = 0x0102,
 } judge_data_id_e;
 
-
+#pragma pack(push)
+#pragma pack(1)
 /** 
   * @brief  game information structures definition(0x0001)
   *         this package send frequency is 50Hz
   */
-typedef __packed struct
+typedef struct
 {
   uint16_t   stage_remain_time;
   uint8_t    game_process;
@@ -74,7 +75,7 @@ typedef __packed struct
 /** 
   * @brief  real time blood volume change data(0x0002)
   */
-typedef __packed struct
+typedef struct
 {
   uint8_t armor_type:4;
  /* 0-3bits: the attacked armor id:
@@ -94,7 +95,7 @@ typedef __packed struct
 /** 
   * @brief  real time shooting data(0x0003)
   */
-typedef __packed struct
+typedef struct
 {
   uint8_t bullet_type;
   uint8_t bullet_freq;
@@ -104,7 +105,7 @@ typedef __packed struct
 /** 
   * @brief  real chassis power and shoot heat data(0x0004)
   */
-typedef __packed struct
+typedef struct
 {
   float chassis_volt;
   float chassis_current;
@@ -119,7 +120,7 @@ typedef __packed struct
 /** 
   * @brief  rfid detect data(0x0005)
   */
-typedef __packed struct
+typedef struct
 {
   uint8_t card_type;
   uint8_t card_idx;
@@ -128,7 +129,7 @@ typedef __packed struct
 /** 
   * @brief  game result data(0x0006)
   */
-typedef __packed struct
+typedef struct
 {
   uint8_t winner;
 } game_result_t;
@@ -136,7 +137,7 @@ typedef __packed struct
 /** 
   * @brief  the data of get field buff(0x0007)
   */
-typedef __packed struct
+typedef struct
 {
   uint16_t buff_musk;
 } get_buff_t;
@@ -144,7 +145,7 @@ typedef __packed struct
 /** 
   * @brief  uwb data(0x0008)
   */
-typedef __packed struct
+typedef struct
 {
   float x;
   float y;
@@ -155,22 +156,23 @@ typedef __packed struct
 /** 
   * @brief  student custom data
   */
-typedef __packed struct
+typedef struct
 {
   float data1;
   float data2;
   float data3;
 } client_show_data_t;
 
-typedef __packed struct
+typedef struct
 {
   uint8_t  data[64];
 } user_to_server_t;
 
-typedef __packed struct
+typedef struct
 {
   uint8_t  data[32];
 } server_to_user_t;
+#pragma pack(pop)
 
 /** 
   * @brief  the data structure receive from judgement

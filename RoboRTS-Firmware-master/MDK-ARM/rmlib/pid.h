@@ -38,7 +38,7 @@ enum
   DELTA_PID,
   CIRCULAR_PID,
 };
-typedef struct pid_t
+typedef struct PID_t
 {
   float p;
   float i;
@@ -60,16 +60,16 @@ typedef struct pid_t
   uint32_t max_out;
   uint32_t integral_limit;
 
-  void (*f_param_init)(struct pid_t *pid, 
+  void (*f_param_init)(struct PID_t *pid, 
                        uint32_t      pid_mode,
                        uint32_t      max_output,
                        uint32_t      inte_limit,
                        float         p,
                        float         i,
                        float         d); //创建实例了以后可以通过init来改变值
-  void (*f_pid_reset)(struct pid_t *pid, float p, float i, float d);
+  void (*f_pid_reset)(struct PID_t *pid, float p, float i, float d);
  
-} pid_t;
+} PID_t;
 
 
 #if 0
@@ -115,20 +115,20 @@ typedef struct
   uint32_t max_out;
   uint32_t integral_limit;
 
-  void (*f_param_init)(struct pid_t *pid, 
+  void (*f_param_init)(struct PID_t *pid, 
                        uint32_t      pid_mode,
                        uint32_t      max_output,
                        uint32_t      inte_limit,
                        float         p,
                        float         i,
                        float         d);
-  void (*f_pid_reset)(struct pid_t *pid, float p, float i, float d);
+  void (*f_pid_reset)(struct PID_t *pid, float p, float i, float d);
  
 } grade_pid_t;
 #endif
 
 void PID_struct_init(
-    pid_t*   pid,
+    PID_t*   pid,
     uint32_t mode,
     uint32_t maxout,
     uint32_t intergral_limit,
@@ -137,17 +137,17 @@ void PID_struct_init(
     float ki,
     float kd);
 
-float pid_calc(pid_t *pid, float fdb, float ref);
+float pid_calc(PID_t *pid, float fdb, float ref);
 
-extern pid_t pid_pit;
-extern pid_t pid_yaw;
-extern pid_t pid_pit_spd;
-extern pid_t pid_yaw_spd;
-extern pid_t pid_spd[4];
+extern PID_t pid_pit;
+extern PID_t pid_yaw;
+extern PID_t pid_pit_spd;
+extern PID_t pid_yaw_spd;
+extern PID_t pid_spd[4];
 
-extern pid_t pid_chassis_angle;
-extern pid_t pid_trigger;
-extern pid_t pid_trigger_spd;
-extern pid_t pid_imu_tmp;
+extern PID_t pid_chassis_angle;
+extern PID_t pid_trigger;
+extern PID_t pid_trigger_spd;
+extern PID_t pid_imu_tmp;
 
 #endif
