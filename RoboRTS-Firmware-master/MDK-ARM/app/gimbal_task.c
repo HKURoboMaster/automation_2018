@@ -598,7 +598,7 @@ void gimbal_param_init(void)
   /* bullet trigger motor pid parameter */
   PID_struct_init(&pid_trigger, POSITION_PID, 10000, 2000,
                   15, 0, 10);
-  PID_struct_init(&pid_trigger_spd, POSITION_PID, 0, 3000,
+  PID_struct_init(&pid_trigger_spd, POSITION_PID, 8000, 3000,
                   1.5, 0.1, 5); //8000
                   
   kalman_filter_init(&yaw_kalman_filter, &yaw_kalman_filter_para);
