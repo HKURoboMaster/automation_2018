@@ -93,7 +93,7 @@ gim_pid_debug_t debug_pit = {
   25, \
   0, \
   0, \
-  20, \
+  16, \
   0.1, \
   0.2
 };
@@ -586,7 +586,7 @@ void gimbal_param_init(void)
   /* pitch axis motor pid parameter */
   PID_struct_init(&pid_pit, POSITION_PID, 1000, 0,
                   130, 1, 65); 
-  PID_struct_init(&pid_pit_spd, POSITION_PID, 6000, 350,
+  PID_struct_init(&pid_pit_spd, POSITION_PID, 4000, 350,
                   3.7, 0, 0);  //6000
 
   /* yaw axis motor pid parameter */

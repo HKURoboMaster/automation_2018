@@ -62,9 +62,9 @@
 
 /**************************shoot  setting********************************/
 /* shoot speed */
-#define DEFAULT_FRIC_WHEEL_SPEED 200 //maximum value is 200
+#define DEFAULT_FRIC_WHEEL_SPEED 50 //maximum value is 200
 /* shoot frequence */
-#define TRIGGER_MOTOR_SPEED      2000 
+#define TRIGGER_MOTOR_SPEED      1600 
 
 
 
@@ -155,8 +155,8 @@
 #define COMPUTER_HUART     huart6 //connected to manifold/TXone
 
 /* gimbal relevant */
-#define PIT_ANGLE_MAX      20
-#define PIT_ANGLE_MIN      -20
+#define PIT_ANGLE_MAX      12
+#define PIT_ANGLE_MIN      -12
 #define YAW_ANGLE_MAX      180
 #define YAW_ANGLE_MIN      -180
 
