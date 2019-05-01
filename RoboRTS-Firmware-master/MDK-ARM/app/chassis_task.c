@@ -43,7 +43,7 @@
 #include "cmsis_os.h"
 
 /* chassis twist angle (degree)*/
-#define TWIST_ANGLE    180
+#define TWIST_ANGLE    40
 /* twist period time (ms) */
 #define TWIST_PERIOD   3000
 /* warning surplus energy */
