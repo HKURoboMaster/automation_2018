@@ -211,7 +211,7 @@ static void fric_wheel_ctrl(void)
   }
   else
   {
-    turn_off_friction_wheel();
+    turn_on_friction_wheel(100);
     turn_off_laser();
   }
 	//For magazine lid control
@@ -233,7 +233,7 @@ static void fric_wheel_ctrl(void)
   int speed_debug = 200;
 
 #elif (INFANTRY_NUM == INFANTRY_3)
-  int speed_debug = 190; //17.5
+  int speed_debug = 195; //17.5
 
 #elif (INFANTRY_NUM == INFANTRY_4)
   int speed_debug = 200;//16.5

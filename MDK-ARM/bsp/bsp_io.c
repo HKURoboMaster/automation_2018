@@ -28,6 +28,7 @@
 #include "sys_config.h"
 #include "tim.h"
 int portion = 100;
+int friction_flag=2;
 void turn_on_laser(void)
 {
   HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, GPIO_PIN_SET);
@@ -46,15 +47,22 @@ uint8_t get_trigger_key_state(void)
 
 void turn_on_friction_wheel(uint16_t spd)
 {
-  LEFT_FRICTION  = spd;
-  RIGHT_FIRCTION = spd;
+	static int slope = 1000;
+	if(spd>100)
+	{
+		if(slope<=1800)
+			slope+=1;
+	}
+	else
+	{
+		if(slope>1000)
+			slope--;
+	}
+  LEFT_FRICTION  = slope/10;
+  RIGHT_FIRCTION = slope/10;
 }
 
-void turn_off_friction_wheel(void)
-{
-  LEFT_FRICTION  = 1000;
-  RIGHT_FIRCTION = 1000;
-}
+
 //Eric Edited
 void turn_on_magalid(uint16_t servo_debug)
 {
