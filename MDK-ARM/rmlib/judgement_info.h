@@ -48,6 +48,8 @@ typedef enum
   STU_CUSTOM_DATA_ID = 0x0100,
   ROBOT_TO_CLIENT_ID = 0x0101,
   CLIENT_TO_ROBOT_ID = 0x0102,
+  
+  HEAT_POWER_ID = 0x0202,
 } judge_data_id_e;
 
 #pragma pack(push)
@@ -172,6 +174,16 @@ typedef struct
 {
   uint8_t  data[32];
 } server_to_user_t;
+
+typedef struct
+{
+  uint16_t chassis_volt;
+  uint16_t chassis_current;
+  float chassis_power;
+  uint16_t chassis_power_buffer;
+  uint16_t shooter_heat0;
+  uint16_t shooter_heat1;
+} ext_power_heat_data_t;
 #pragma pack(pop)
 
 /** 
@@ -188,6 +200,7 @@ typedef struct
   get_buff_t         get_buff_data;      //0x0007
   robot_position_t   robot_pos_data;     //0x0008
   server_to_user_t   student_download_data;
+  ext_power_heat_data_t ext_power_heat_data;
 } receive_judge_t;
 
 /* data send (forward) */

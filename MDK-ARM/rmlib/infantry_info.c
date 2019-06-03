@@ -80,7 +80,7 @@ void pc_data_handler(uint8_t *p_frame)
 
   uint16_t data_length = p_header->data_length;
   uint16_t cmd_id      = *(uint16_t *)(p_frame + HEADER_LEN);
-  uint8_t *data_addr   = p_frame + HEADER_LEN + CMD_LEN;
+  uint8_t *data_addr   = p_frame + HEADER_LEN + CMDID_LEN;
 
   //lost pack monitor
   pack_num_cnt++;

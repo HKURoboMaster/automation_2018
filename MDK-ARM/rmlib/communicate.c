@@ -70,7 +70,7 @@ void unpack_fifo_data(unpack_data_t *p_obj, uint8_t sof)
         p_obj->data_len |= (byte << 8);
         p_obj->protocol_packet[p_obj->index++] = byte;
 
-        if(p_obj->data_len < (PROTOCAL_FRAME_MAX_SIZE - HEADER_LEN - CRC_LEN))
+        if(p_obj->data_len < (PROTOCAL_FRAME_MAX_SIZE - (HEADER_LEN + CRC16_LEN + CMDID_LEN)))
         {
           p_obj->unpack_step = STEP_FRAME_SEQ;
         }
@@ -107,16 +107,16 @@ void unpack_fifo_data(unpack_data_t *p_obj, uint8_t sof)
 
       case STEP_DATA_CRC16:
       {
-        if (p_obj->index < (HEADER_LEN + CMD_LEN + p_obj->data_len + CRC_LEN))
+        if (p_obj->index < (HEADER_LEN + CMDID_LEN + p_obj->data_len + CRC16_LEN))
         {
            p_obj->protocol_packet[p_obj->index++] = byte;  
         }
-        if (p_obj->index >= (HEADER_LEN + CMD_LEN + p_obj->data_len + CRC_LEN))
+        if (p_obj->index >= (HEADER_LEN + CMDID_LEN + p_obj->data_len + CRC16_LEN))
         {
           p_obj->unpack_step = STEP_HEADER_SOF;
           p_obj->index = 0;
 
-          if ( verify_crc16_check_sum(p_obj->protocol_packet, HEADER_LEN + CMD_LEN + p_obj->data_len + CRC_LEN) )
+          if ( verify_crc16_check_sum(p_obj->protocol_packet, HEADER_LEN + CMDID_LEN + p_obj->data_len + CRC16_LEN) )
           {
             if (sof == UP_REG_ID)
             {
@@ -214,7 +214,7 @@ uint8_t* protocol_packet_pack(uint16_t cmd_id, uint8_t *p_data, uint16_t len, ui
   //memset(tx_buf, 0, 100);
   static uint8_t seq;
   
-  uint16_t frame_length = HEADER_LEN + CMD_LEN + len + CRC_LEN;
+  uint16_t frame_length = HEADER_LEN + CMDID_LEN + len + CRC16_LEN;
   frame_header_t *p_header = (frame_header_t*)tx_buf;
   
   p_header->sof          = sof;
@@ -234,9 +234,9 @@ uint8_t* protocol_packet_pack(uint16_t cmd_id, uint8_t *p_data, uint16_t len, ui
   }
   
   
-  memcpy(&tx_buf[HEADER_LEN], (uint8_t*)&cmd_id, CMD_LEN);
+  memcpy(&tx_buf[HEADER_LEN], (uint8_t*)&cmd_id, CMDID_LEN);
   append_crc8_check_sum(tx_buf, HEADER_LEN);
-  memcpy(&tx_buf[HEADER_LEN + CMD_LEN], p_data, len);
+  memcpy(&tx_buf[HEADER_LEN + CMDID_LEN], p_data, len);
   append_crc16_check_sum(tx_buf, frame_length);
   
   return tx_buf;

@@ -339,7 +339,7 @@ void data_packet_pack(uint16_t cmd_id, uint8_t *p_data, uint16_t len, uint8_t so
 {
   uint8_t tx_buf[PROTOCAL_FRAME_MAX_SIZE];
   
-  uint16_t frame_length = HEADER_LEN + CMD_LEN + len + CRC_LEN;
+  uint16_t frame_length = HEADER_LEN + CMDID_LEN + len + CRC16_LEN;
   
   protocol_packet_pack(cmd_id, p_data, len, sof, tx_buf);
   

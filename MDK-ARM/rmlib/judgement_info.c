@@ -53,7 +53,7 @@ void judgement_data_handler(uint8_t *p_frame)
 
   uint16_t data_length = p_header->data_length;
   uint16_t cmd_id      = *(uint16_t *)(p_frame + HEADER_LEN);
-  uint8_t *data_addr   = p_frame + HEADER_LEN + CMD_LEN;
+  uint8_t *data_addr   = p_frame + HEADER_LEN + CMDID_LEN;
   
   uint8_t forward_flag = 1;
   
@@ -111,6 +111,10 @@ void judgement_data_handler(uint8_t *p_frame)
     
     case ROBOT_POS_DATA_ID:
       memcpy(&judge_recv_mesg.robot_pos_data, data_addr, data_length);
+    break;
+    
+    case HEAT_POWER_ID:
+      memcpy(&judge_recv_mesg.ext_power_heat_data, data_addr, data_length);
     break;
     
     default:
