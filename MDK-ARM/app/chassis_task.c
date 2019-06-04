@@ -75,8 +75,12 @@ void chassis_task(void const *argu)
       {
 				chassis.vy = rm.vy * CHASSIS_RC_MOVE_RATIO_Y + km.vy * CHASSIS_KB_MOVE_RATIO_Y;
 				chassis.vx = rm.vx * CHASSIS_RC_MOVE_RATIO_X + km.vx * CHASSIS_KB_MOVE_RATIO_X;
+        #ifdef ROTATING
+        chassis_rotation_handler();
+        #else
         chassis_twist_handler();//re-calculate the x and y speed ref basing on the current position
 																//and calculate the rotation speed
+        #endif
       }
 			else if(gim.ctrl_mode == GIMBAL_RELATIVE_MODE) //uncontrollable by rc
 			{
@@ -224,6 +228,16 @@ static void chassis_twist_handler(void)
   chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
+}
+/**
+ * Added by Y.H. Liu
+ * @Jun 4th, 2019: declaration and the empty definition of the function
+ * 
+ * For the rotating dodging for the infantry, while the twisting dodging is left for Hero  
+ */
+static void chassis_rotation_handler(void)
+{
+  //TODO
 }
 void separate_gimbal_handler(void)
 {

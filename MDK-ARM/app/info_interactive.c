@@ -47,6 +47,7 @@
 #include "sys_config.h"
 #include "cmsis_os.h"
 #include "stdlib.h"
+#include "RobotType.h"
 
 void get_chassis_info(void)
 {
@@ -520,7 +521,9 @@ extern hero_frame frame_ctrl;
 int16_t count_time = 0;
 void get_frame_info(void)
 {
+	#ifndef HERO
 	frame_ctrl.status = OFF; //comment it for hero
+	#else
 	/*Step-1: get info from RC*/
 	remote_ctrl_hero_frame();
 	if(km.kb_enable)
@@ -627,4 +630,5 @@ void get_frame_info(void)
 		frame_ctrl.output = -1;
 	else
 		frame_ctrl.output = 0;
+	#endif
 }

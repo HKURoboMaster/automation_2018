@@ -817,6 +817,11 @@
               <FileType>1</FileType>
               <FilePath>.\app\record_task.c</FilePath>
             </File>
+            <File>
+              <FileName>RobotType.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\RobotType.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

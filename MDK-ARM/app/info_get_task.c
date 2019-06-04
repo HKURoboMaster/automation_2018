@@ -30,6 +30,7 @@
 #include "remote_ctrl.h"
 #include "keyboard.h"
 #include "cmsis_os.h"
+#include "RobotType.h"
 
 /* stack usage monitor */
 UBaseType_t info_stack_surplus;
@@ -61,8 +62,9 @@ void info_get_task(void const *argu)
         get_chassis_info();
         get_gimbal_info();
         get_shoot_info();
-        //get_frame_info();
-				//de-comment it for hero;
+				#ifdef HERO
+        get_frame_info(); //for hero;
+				#endif
         get_global_last_info();
         
         taskEXIT_CRITICAL();

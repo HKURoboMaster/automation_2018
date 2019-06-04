@@ -40,6 +40,7 @@
 #include "cmsis_os.h"
 #include "string.h"
 #include "math.h"
+#include "RobotType.h"
 
 #define INFANTRY_NUM INFANTRY_3
 
@@ -214,6 +215,7 @@ static void fric_wheel_ctrl(void)
     turn_on_friction_wheel(100);
     turn_off_laser();
   }
+	#ifndef HERO
 	//For magazine lid control
 	if(maga.funct)
 	{
@@ -223,6 +225,7 @@ static void fric_wheel_ctrl(void)
 	{
 		turn_off_magalid();
 	}
+	#endif
 }
 
 

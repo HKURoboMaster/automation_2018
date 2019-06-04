@@ -15,8 +15,8 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 /** @file modeswitch_task.c
- *  @version 1.0
- *  @date Oct 2017
+ *  @version 2.0
+ *  @date Jun 2019
  *
  *  @brief infantry control mode switch
  *
@@ -88,6 +88,17 @@ static void kb_enable_hook(void) //鼠标键盘控制还是遥控器控制。
     km.kb_enable = 0;
 
 }
+
+/**
+ * Edited by Y.H Liu
+ * @Jun 4th, 2019
+ *  
+ * Change the state transferring logic, and simplify the control
+ * After modification, the SW2 switch the robot from 
+ *     Chassis-Follow-Gimbal, a.k.a. Manual               [UP]
+ *     Relaxed, a.k.a. Auto: Disabled                     [MID]
+ *     Gimbal-Follow-Chassis, a.k.a. SemiAuto: Debugging  [DOWN]
+*/ 
 void get_main_ctrl_mode(void)
 {
   //host PC has been connected
@@ -103,12 +114,12 @@ void get_main_ctrl_mode(void)
 #ifdef AUTO_NAVIGATION
       case RC_MI:
       {
-        glb_ctrl_mode = SEMI_AUTO_MODE;
+        glb_ctrl_mode = AUTO_CTRL_MODE; //Only the auto: disabled is in used
       }break;
       
       case RC_DN:
       {
-        glb_ctrl_mode = AUTO_CTRL_MODE;
+        glb_ctrl_mode = SEMI_AUTO_MODE; //Only the semi-auto: gimbal follow chassis is in used
       }break;
 #endif
       
@@ -163,7 +174,12 @@ static action_mode_e remote_is_action(void)
   }
 }
 
-
+/**
+ * Edited by Y.H. Liu
+ * @Jun 4th, 2019
+ * 
+ * To match the modification mentioned above.  
+*/ 
 static void gimbal_mode_handler(void)
 {
   switch (glb_ctrl_mode)
@@ -232,47 +248,12 @@ static void gimbal_mode_handler(void)
     
     case SEMI_AUTO_MODE:
     {
-      switch (rc.sw1)
-      {
-        case RC_UP:
-        {
-          gim.ctrl_mode = GIMBAL_FOLLOW_ZGYRO;
-        }break;
-        
-        case RC_MI:
-        {
-          gim.ctrl_mode = GIMBAL_RELATIVE_MODE;
-        }break;
-        
-        default:
-        {
-          gim.ctrl_mode = GIMBAL_RELATIVE_MODE;
-        }break;
-      }
+      gim.ctrl_mode = GIMBAL_RELATIVE_MODE;
     }break;
     
     case AUTO_CTRL_MODE:
     {
-      switch (rc.sw1)
-      {
-        case RC_UP:
-        case RC_MI:
-        {
-//          //patrol and relative mode
-//          gim.ctrl_mode = (gimbal_mode_e)pc_recv_mesg.gimbal_control_data.ctrl_mode;
-//          
-//          /* gimbal first enter patrol mode */
-//          /* patrol valid only in gimbal auto mode */
-//          if (gim.last_ctrl_mode != GIMBAL_PATROL_MODE && gim.ctrl_mode == GIMBAL_PATROL_MODE)
-//            gim.pid.yaw_angle_ref = gim.sensor.yaw_relative_angle;
-  
-        }break;
-        
-        default:
-        {
-          gim.ctrl_mode = GIMBAL_RELAX;
-        }break;
-      }
+      gim.ctrl_mode = GIMBAL_RELAX;
     }break;
     
     default:
@@ -310,7 +291,12 @@ static void get_global_last_mode(void)
   chassis.last_ctrl_mode = chassis.ctrl_mode;
 }
 
-
+/**
+ * Edited by Y.H. Liu
+ * @Jun 4th, 2019
+ * 
+ * To match the modification mentioned above.  
+*/ 
 static void chassis_mode_handler(void)
 {
   switch (glb_ctrl_mode)
@@ -327,44 +313,17 @@ static void chassis_mode_handler(void)
     
     case SEMI_AUTO_MODE:
     {
-      switch (rc.sw1)
-      {
-        case RC_UP:
-        {
-          chassis.ctrl_mode = DODGE_MODE;
-        }break;
-        
-        case RC_MI:
-        {
-					chassis.ctrl_mode = MANUAL_SEPARATE_GIMBAL;
-          //chassis.follow_gimbal = 1;
-          //chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
-        }break;
-        
-        case RC_DN:
-        {
-          chassis.ctrl_mode = DODGE_MODE;//MANUAL_SEPARATE_GIMBAL;
-        }break;
-        
-      }
+			chassis.ctrl_mode = MANUAL_SEPARATE_GIMBAL;
+      //chassis.follow_gimbal = 1;
+      //chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
+      
+      if (km.twist_ctrl) //keyboard trigger chassis twist mode
+        chassis.ctrl_mode = DODGE_MODE;
     }break;
     
     case AUTO_CTRL_MODE:
     {
-      switch (rc.sw1)
-      {
-        case RC_UP:
-        case RC_MI:
-        {
-//          chassis.ctrl_mode = (chassis_mode_e)pc_recv_mesg.chassis_control_data.ctrl_mode;
-        }break;
-        
-        case RC_DN:
-        {
-          chassis.ctrl_mode = CHASSIS_STOP;
-        }break;
-        
-      }
+      chassis.ctrl_mode = CHASSIS_STOP;
     }break;
     
     default:
@@ -392,9 +351,10 @@ void get_chassis_mode(void)
     chassis_mode_handler();
   }
   
-  /* chassis first enter dodge mode */
+  /* chassis just enter dodge mode */
   if (chassis.last_ctrl_mode != DODGE_MODE && chassis.ctrl_mode == DODGE_MODE)
   {
+    #ifndef ROTATING
     if (gim.sensor.yaw_relative_angle > 0)
       twist_side = 1;
     else
@@ -402,7 +362,9 @@ void get_chassis_mode(void)
     
     if ((gim.sensor.yaw_relative_angle < twist_angle) && (gim.sensor.yaw_relative_angle > -twist_angle))
       twist_count = acos((gim.sensor.yaw_relative_angle - twist_side*twist_angle)/(-twist_sign*40.0)) * twist_period / (2*PI);
-      
+    #else
+
+    #endif
   }
   
 }
@@ -427,6 +389,12 @@ uint8_t chassis_is_controllable(void)
     return 1;
 }
 
+/**
+ * Edited by Y.H. Liu
+ * @Jun 4th, 2019
+ * 
+ * To match the modification mentioned above.  
+*/ 
 void get_shoot_mode(void)
 {
   switch (glb_ctrl_mode)
@@ -441,13 +409,15 @@ void get_shoot_mode(void)
     
     case SEMI_AUTO_MODE:
     {
-      shoot.ctrl_mode = SEMIAUTO_CTRL_SHOT;
-      //shoot.ctrl_mode = SHOT_DISABLE;
+      if (km.kb_enable)
+        shoot.ctrl_mode = KEYBOARD_CTRL_SHOT;
+      else
+        shoot.ctrl_mode = REMOTE_CTRL_SHOT;
     }break;
     
     case AUTO_CTRL_MODE:
     {
-      shoot.ctrl_mode = AUTO_CTRL_SHOT;
+      shoot.ctrl_mode = SHOT_DISABLE;
     }break;
     
     default:
@@ -459,5 +429,4 @@ void get_shoot_mode(void)
 
   if (gim.ctrl_mode == GIMBAL_RELAX)
     shoot.ctrl_mode = SHOT_DISABLE;
-
 }

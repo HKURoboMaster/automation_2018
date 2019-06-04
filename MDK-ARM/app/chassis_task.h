@@ -32,6 +32,7 @@
 
 /* chassis control period time (ms) */
 #define CHASSIS_PERIOD 10
+#define ROTATING
 
 typedef enum
 {
@@ -73,6 +74,7 @@ void chassis_param_init(void);
 void power_limit_handler(void);
 
 static void chassis_twist_handler(void);
+static void chassis_rotation_handler(void);
 static void chassis_stop_handler(void);
 static void separate_gimbal_handler(void);
 static void follow_gimbal_handler(void);
