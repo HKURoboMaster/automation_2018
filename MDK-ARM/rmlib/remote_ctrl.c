@@ -88,9 +88,13 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buff)
 
 static void chassis_operation_func(int16_t forward_back, int16_t left_right, int16_t rotate)
 {
-  rm.vx =  forward_back / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_X;
-  rm.vy = -left_right / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_Y;
-  rm.vw = -rotate / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_R;
+  int16_t abs_fb = forward_back<0 ? -1*forward_back : forward_back;
+  int16_t abs_lr = left_right<0 ? -1*left_right : left_right;
+  int16_t abs_rt = rotate<0 ? -1*rotate : rotate;
+
+  rm.vx =  (forward_back*abs_fb/660) / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_X;
+  rm.vy = -(left_right*abs_lr/660) / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_Y;
+  rm.vw = -(rotate*abs_rt/660) / RC_RESOLUTION * CHASSIS_RC_MAX_SPEED_R;
 	rm.vz = frame_ctrl.output * HERO_FRAME_SPEED;
 }
 
@@ -102,8 +106,10 @@ void remote_ctrl_chassis_hook(void)
 static void gimbal_operation_func(int16_t pit_ctrl, int16_t yaw_ctrl)
 {
   /* gimbal coordinate system is right hand coordinate system */
+  int16_t abs_yaw = yaw_ctrl<0 ? -1*yaw_ctrl : yaw_ctrl;
+
   rm.pit_v = -pit_ctrl * 0.0005f;
-  rm.yaw_v = -yaw_ctrl * 0.0005f;
+  rm.yaw_v = -(yaw_ctrl*abs_yaw/660) * 0.0005f;
 }
 
 void remote_ctrl_gimbal_hook(void)
