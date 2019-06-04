@@ -266,6 +266,10 @@ void gimbal_task(void const *argu)
 			
     break;
 
+    case GIMBAL_TRACK_ARMOR: 
+      pc_relative_ctrl_handler();
+    break;
+
     default:
     break;
   }

@@ -222,10 +222,10 @@ static void gimbal_mode_handler(void)
       if (km.twist_ctrl)
         gim.ctrl_mode = GIMBAL_FOLLOW_ZGYRO;
       
-#if 0
-//      /* manual trigger track armor */
-//      if (km.track_ctrl)
-//        gim.ctrl_mode = GIMBAL_TRACK_ARMOR;
+
+      /* manual trigger track armor */
+      if (km.track_ctrl)
+        gim.ctrl_mode = GIMBAL_TRACK_ARMOR;
 //      
 //      /* manual trigger big buff */
 //      if (km.buff_ctrl && km.kb_enable)
@@ -240,7 +240,7 @@ static void gimbal_mode_handler(void)
 //      }
 //      else
 //        chassis.follow_gimbal = 1;
-#endif
+
       
       if (gim.last_ctrl_mode == GIMBAL_RELAX)
         gim.ctrl_mode = GIMBAL_FOLLOW_ZGYRO;
