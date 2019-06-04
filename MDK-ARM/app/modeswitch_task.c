@@ -359,12 +359,11 @@ void get_chassis_mode(void)
       twist_side = 1;
     else
       twist_side = -1;
-    
     if ((gim.sensor.yaw_relative_angle < twist_angle) && (gim.sensor.yaw_relative_angle > -twist_angle))
       twist_count = acos((gim.sensor.yaw_relative_angle - twist_side*twist_angle)/(-twist_sign*40.0)) * twist_period / (2*PI);
-    #else
-
     #endif
+    //TWIST: twist count is calculated based on the current relative angle and is used to generate the position ref
+    //ROTATION: however, the rotating is successive, thus there is no need to count.  
   }
   
 }

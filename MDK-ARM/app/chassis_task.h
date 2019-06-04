@@ -32,7 +32,7 @@
 
 /* chassis control period time (ms) */
 #define CHASSIS_PERIOD 10
-#define ROTATING
+//#define ROTATING
 
 typedef enum
 {
