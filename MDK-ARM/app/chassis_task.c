@@ -190,11 +190,22 @@ void chassis_stop_handler(void)
 int8_t   twist_side = 1;
 int8_t   twist_sign = 1;
 uint32_t twist_count;
+uint32_t now_tick;
+uint32_t last_tick = 0;
 
+/**
+ * Edited by Y.H. Liu
+ * @Jun 5, 2019: Testing Version 1 (simply twisting)
+ * 
+ * Simply twisting, which means that vw will be changed from +3MAX/5 to -3MIN/5 every 2000 ticks
+ * Quatric twisting, which means that vw will be changed according to the time change
+ * Angle-based twisting, which means that vw will be changed according to the current relative angle
+ */
 int16_t twist_period = TWIST_PERIOD/CHASSIS_PERIOD;
 int16_t twist_angle  = TWIST_ANGLE;
 static void chassis_twist_handler(void)
 {
+  #if 0
   twist_count++;
   
   if (twist_side > 0)
@@ -233,6 +244,21 @@ static void chassis_twist_handler(void)
   chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
+  #else
+  //simple twisting
+  now_tick = HAL_GetTick();
+  twist_count += now_tick-last_tick;
+  if(twist_count > 2000)
+  {
+    twist_count = 0;
+    twist_sign *= -1;
+  }
+  float vx = chassis.vx;
+	float vy = chassis.vy;
+  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
+	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
+  chassis.vw = 3*CHASSIS_RC_MAX_SPEED_R/5 * twist_sign;
+  #endif
 }
 /**
  * Added by Y.H. Liu
