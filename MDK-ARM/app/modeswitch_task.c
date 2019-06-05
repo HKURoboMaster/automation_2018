@@ -147,7 +147,7 @@ void get_main_ctrl_mode(void)
   }
   
   
-  if ((rc.sw1 == RC_DN) && (rc.sw2 == RC_DN))
+  if (rc.sw2 == RC_MI)
     glb_ctrl_mode = SAFETY_MODE;
   
   kb_enable_hook();
@@ -242,7 +242,9 @@ static void gimbal_mode_handler(void)
 //        chassis.follow_gimbal = 1;
 
       
-      if (gim.last_ctrl_mode == GIMBAL_RELAX)
+      if (gim.last_ctrl_mode == GIMBAL_RELAX || 
+          gim.last_ctrl_mode == GIMBAL_TRACK_ARMOR && !km.track_ctrl ||
+          chassis.last_ctrl_mode == DODGE_MODE && !km.twist_ctrl)
         gim.ctrl_mode = GIMBAL_FOLLOW_ZGYRO;
     }break;
     
