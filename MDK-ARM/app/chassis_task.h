@@ -32,6 +32,9 @@
 
 /* chassis control period time (ms) */
 #define CHASSIS_PERIOD 10
+#define origin_twist 0
+#define simple_twist 1
+#define time_twist 0
 //#define ROTATING
 
 typedef enum

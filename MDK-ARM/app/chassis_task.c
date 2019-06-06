@@ -205,7 +205,7 @@ int16_t twist_period = TWIST_PERIOD/CHASSIS_PERIOD;
 int16_t twist_angle  = TWIST_ANGLE;
 static void chassis_twist_handler(void)
 {
-  #if 0
+  #if origin_twist
   twist_count++;
   
   if (twist_side > 0)
@@ -244,10 +244,12 @@ static void chassis_twist_handler(void)
   chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
-  #else
+  #endif
+  #if simple_twist
   //simple twisting
   now_tick = HAL_GetTick();
   twist_count += now_tick-last_tick;
+  last_tick = now_tick;
   if(twist_count > 2000)
   {
     twist_count = 0;
@@ -258,6 +260,24 @@ static void chassis_twist_handler(void)
   chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = 3*CHASSIS_RC_MAX_SPEED_R/5 * twist_sign;
+  #endif
+  #if time_twist
+  //time-based twist with a quatric function
+  now_tick = HAL_GetTick();
+  twist_count += now_tick-last_tick;
+  last_tick = now_tick;
+  if(twist_count >= 2000)
+  {
+    twist_count = 0;
+    twist_sign *= -1;
+  }
+  float quatric_t = 0.0f;
+  quatric_t += twist_count * twist_count;                 //q = t^2
+  quatric_t *= quatric_t;                                 //q = t^4
+  quatric_t -= 4000*twist_count*twist_count*twist_count;  //q = t^4 - 4000(t^3)
+  quatric_t += 4000000*twist_count*twist_count;           //q = t^4 - 4000(t^3) + 4*10e6(x^2)
+  for(int power=0; power<4;power++) quatric_t/=1000;      //Scale q to [0,1)
+  chassis.vw = twist_sign * 3 * (int32_t)quatric_t * CHASSIS_RC_MAX_SPEED_R/5;
   #endif
 }
 /**
