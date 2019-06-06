@@ -480,7 +480,12 @@ uint32_t time_raw;
 uint32_t time_raw_last;
 float position_threshold = 100;
 float shoot_delta        = 1.0;
-
+/**
+ * Modified by Y.H. Liu
+ * @Jun 6, 2019: RC, KM & PC working concurrently
+ * 
+ * For the PC-Assisted Aimming, i.e. tracking armors
+ */
 void pc_relative_ctrl_handler(void)
 {
   static float yaw_angle_raw;
@@ -525,9 +530,13 @@ void pc_relative_ctrl_handler(void)
 		pc_debug = pc_recv_mesg.gimbal_control_data.yaw_ref;
   }
   chassis_angle_tmp = gim.sensor.yaw_gyro_angle - gim.sensor.yaw_relative_angle;
+  gim.pid.yaw_angle_ref += rm.yaw_v * GIMBAL_RC_MOVE_RATIO_YAW
+                        + km.yaw_v * GIMBAL_PC_MOVE_RATIO_YAW;
   VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
   
   gim.pid.pit_angle_ref += pitch_angle_raw;//pitch_kf_result[0] + pit_deg;
+  gim.pid.pit_angle_ref += rm.pit_v * GIMBAL_RC_MOVE_RATIO_PIT
+                        + km.pit_v * GIMBAL_PC_MOVE_RATIO_PIT;
   VAL_LIMIT(gim.pid.pit_angle_ref, PIT_ANGLE_MIN, PIT_ANGLE_MAX);
   
   
