@@ -260,6 +260,7 @@ static void chassis_twist_handler(void)
   chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
 	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
   chassis.vw = 3*CHASSIS_RC_MAX_SPEED_R/5 * twist_sign;
+  //no need for PID here, since this is a func w.r.t. time (in ms)
   #endif
   #if time_twist
   //time-based twist with a quatric function
@@ -278,6 +279,11 @@ static void chassis_twist_handler(void)
   quatric_t += 4000000*twist_count*twist_count;           //q = t^4 - 4000(t^3) + 4*10e6(x^2)
   for(int power=0; power<4;power++) quatric_t/=1000;      //Scale q to [0,1)
   chassis.vw = twist_sign * 3 * (int32_t)quatric_t * CHASSIS_RC_MAX_SPEED_R/5;
+  float vx = chassis.vx;
+	float vy = chassis.vy;
+  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
+	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
+  //no need for PID here, since this is a func w.r.t. time (in ms)
   #endif
 }
 /**
