@@ -241,8 +241,8 @@ static void chassis_twist_handler(void)
   chassis.position_ref = -twist_sign*twist_angle*cos(2*PI/twist_period*twist_count) + twist_side*twist_angle;
 	float vx = chassis.vx;
 	float vy = chassis.vy;
-  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
-	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
+  chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
+	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   chassis.vw = -pid_calc(&pid_chassis_angle, gim.sensor.yaw_relative_angle, chassis.position_ref);
   #endif
   #if simple_twist
@@ -257,8 +257,8 @@ static void chassis_twist_handler(void)
   }
   float vx = chassis.vx;
 	float vy = chassis.vy;
-  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
-	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
+  chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
+	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   chassis.vw = 3*CHASSIS_RC_MAX_SPEED_R/5 * twist_sign;
   //no need for PID here, since this is a func w.r.t. time (in ms)
   #endif
@@ -267,7 +267,7 @@ static void chassis_twist_handler(void)
   now_tick = HAL_GetTick();
   twist_count += now_tick-last_tick;
   last_tick = now_tick;
-  if(twist_count >= 2000)
+  if(twist_count >= 2000)                                 //Changed to 3500 later
   {
     twist_count = 0;
     twist_sign *= -1;
@@ -278,12 +278,30 @@ static void chassis_twist_handler(void)
   quatric_t -= 4000*twist_count*twist_count*twist_count;  //q = t^4 - 4000(t^3)
   quatric_t += 4000000*twist_count*twist_count;           //q = t^4 - 4000(t^3) + 4*10e6(x^2)
   for(int power=0; power<4;power++) quatric_t/=1000;      //Scale q to [0,1)
-  chassis.vw = twist_sign * 3 * (int32_t)quatric_t * CHASSIS_RC_MAX_SPEED_R/5;
+  if(quatric_t>1) quatric_t = 1;                          //Scale q to [0,1)
+  if(quatric_t<0) quatric_t = 0;                          //Scale q to [0,1)
+  chassis.vw = twist_sign * quatric_t * CHASSIS_RC_MAX_SPEED_R;
   float vx = chassis.vx;
 	float vy = chassis.vy;
-  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
-	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
+  chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
+	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   //no need for PID here, since this is a func w.r.t. time (in ms)
+  #endif
+  #if sin_twist
+  //time-based twist with a sin function
+  now_tick = HAL_GetTick();
+  twist_count += twist_sign * now_tick-last_tick;
+  last_tick = now_tick;
+  if(twist_count >= 1000 || twist_count <= -1000)
+  {
+    twist_count = 0;
+    twist_sign *= -1;
+  }
+  float vx = chassis.vx;
+	float vy = chassis.vy;
+  chassis.vw = twist_sign * cos(PI * twist_count / 1000) * CHASSIS_RC_MAX_SPEED_R;
+  chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
+	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   #endif
 }
 /**
@@ -296,8 +314,8 @@ static void chassis_rotation_handler(void)
 {
   float vx = chassis.vx;
 	float vy = chassis.vy;
-  chassis.vx = vx * cos(gim.sensor.yaw_relative_angle) - vy * sin(gim.sensor.yaw_relative_angle);
-	chassis.vy = vx * sin(gim.sensor.yaw_relative_angle) + vy * cos(gim.sensor.yaw_relative_angle);
+  chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
+	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   chassis.vw = 3*CHASSIS_RC_MAX_SPEED_R/5;
 }
 void separate_gimbal_handler(void)
