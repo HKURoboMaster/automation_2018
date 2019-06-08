@@ -355,7 +355,7 @@ void mecanum_calc(float vx, float vy, float vw, int16_t speed[])
   if(chassis.ctrl_mode == DODGE_MODE)
   {
     chassis.rotate_x_offset = GIMBAL_X_OFFSET;
-    chassis.rotate_y_offset = 0;
+    chassis.rotate_y_offset = GIMBAL_Y_OFFSET;
   }
   else
   {

@@ -243,8 +243,8 @@ static void gimbal_mode_handler(void)
 
       
       if (gim.last_ctrl_mode == GIMBAL_RELAX || 
-          gim.last_ctrl_mode == GIMBAL_TRACK_ARMOR && !km.track_ctrl ||
-          chassis.last_ctrl_mode == DODGE_MODE && !km.twist_ctrl)
+         (gim.last_ctrl_mode == GIMBAL_TRACK_ARMOR && !km.track_ctrl)||
+					chassis.last_ctrl_mode == DODGE_MODE)
         gim.ctrl_mode = GIMBAL_FOLLOW_ZGYRO;
     }break;
     
@@ -305,26 +305,34 @@ static void chassis_mode_handler(void)
   {
     case MANUAL_CTRL_MODE:
     {
-      chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
-      
       /* keyboard trigger chassis twist mode */
-      if (km.twist_ctrl)
+      uint8_t back_to_netural = gim.sensor.yaw_relative_angle < 15 && gim.sensor.yaw_relative_angle > -15 ? 1 : 0;
+      if (km.twist_ctrl || (chassis.ctrl_mode==DODGE_MODE && !back_to_netural)) 
+      { //two situation for dodging: the key is pressed, 
+        //               or (the key is not pressed but) the chassis is still dodging and the gimbal hasn't come back to netural
         chassis.ctrl_mode = DODGE_MODE;
+      }
+      else
+      {
+        chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
+      }
 
     }break;
     
     case SEMI_AUTO_MODE:
     {
-			chassis.ctrl_mode = MANUAL_SEPARATE_GIMBAL;
-      //chassis.follow_gimbal = 1;
-      //chassis.ctrl_mode = MANUAL_FOLLOW_GIMBAL;
+      /* keyboard trigger chassis twist mode */
       uint8_t back_to_netural = gim.sensor.yaw_relative_angle < 5 && gim.sensor.yaw_relative_angle > -5 ? 1 : 0;
       if (km.twist_ctrl || chassis.ctrl_mode==DODGE_MODE && !back_to_netural) 
       { //two situation for dodging: the key is pressed, 
         //               or (the key is not pressed but) the chassis is still dodging and the gimbal hasn't come back to netural
         chassis.ctrl_mode = DODGE_MODE;
       }
-      
+      else
+      {
+        chassis.ctrl_mode = MANUAL_SEPARATE_GIMBAL;
+      }
+
     }break;
     
     case AUTO_CTRL_MODE:
@@ -358,20 +366,19 @@ void get_chassis_mode(void)
   }
   
   /* chassis just enter dodge mode */
+	#ifndef origin_twist
   if (chassis.last_ctrl_mode != DODGE_MODE && chassis.ctrl_mode == DODGE_MODE)
   {
-    #ifndef ROTATING
     if (gim.sensor.yaw_relative_angle > 0)
       twist_side = 1;
     else
       twist_side = -1;
     if ((gim.sensor.yaw_relative_angle < twist_angle) && (gim.sensor.yaw_relative_angle > -twist_angle))
       twist_count = acos((gim.sensor.yaw_relative_angle - twist_side*twist_angle)/(-twist_sign*40.0)) * twist_period / (2*PI);
-    #endif
     //TWIST: twist count is calculated based on the current relative angle and is used to generate the position ref
     //ROTATION: however, the rotating is successive, thus there is no need to count.  
   }
-  
+  #endif
 }
 
 uint8_t gimbal_is_controllable(void)

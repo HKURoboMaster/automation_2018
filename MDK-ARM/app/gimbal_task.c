@@ -425,7 +425,7 @@ void closed_loop_handler(void)
       gim.pid.yaw_angle_ref += rm.yaw_v * GIMBAL_RC_MOVE_RATIO_YAW
                              + km.yaw_v * GIMBAL_PC_MOVE_RATIO_YAW;
       
-      VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
+      //VAL_LIMIT(gim.pid.yaw_angle_ref, chassis_angle_tmp + YAW_ANGLE_MIN - 35, chassis_angle_tmp + YAW_ANGLE_MAX + 35);
     }
   }
   else
