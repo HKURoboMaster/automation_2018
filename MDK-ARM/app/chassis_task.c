@@ -290,16 +290,15 @@ static void chassis_twist_handler(void)
   #if sin_twist
   //time-based twist with a sin function
   now_tick = HAL_GetTick();
-  twist_count += twist_sign * now_tick-last_tick;
+  twist_count += twist_sign * (now_tick-last_tick);
   last_tick = now_tick;
   if(twist_count >= 1000 || twist_count <= -1000)
   {
-    twist_count = 0;
     twist_sign *= -1;
   }
   float vx = chassis.vx;
 	float vy = chassis.vy;
-  chassis.vw = twist_sign * cos(PI * twist_count / 1000) * CHASSIS_RC_MAX_SPEED_R;
+  chassis.vw = twist_sign * sin(PI * twist_count / 1000) * CHASSIS_RC_MAX_SPEED_R;
   chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
 	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   #endif

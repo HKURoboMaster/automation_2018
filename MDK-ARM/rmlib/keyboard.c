@@ -180,7 +180,9 @@ static void move_direction_ctrl(uint8_t forward, uint8_t back,
 static void chassis_operation_func(uint8_t twist_chassis)
 {
   if (twist_chassis)
-    km.twist_ctrl = km.twist_ctrl?0:1;
+    km.twist_ctrl = 1;
+  else
+    km.twist_ctrl = 0;
 }
 
 
