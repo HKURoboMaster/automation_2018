@@ -409,7 +409,7 @@ void no_action_handler(void)
 void closed_loop_handler(void)
 {
   static float chassis_angle_tmp;
-  static float limit_angle_range = 2;
+  static float limit_angle_range = 2; // safety range for dodging
   
   gim.pid.pit_angle_fdb = gim.sensor.pit_relative_angle;
   gim.pid.yaw_angle_fdb = gim.sensor.yaw_gyro_angle - gim.yaw_offset_angle;
@@ -419,8 +419,8 @@ void closed_loop_handler(void)
   /* limit gimbal yaw axis angle */
   if (chassis.ctrl_mode == DODGE_MODE)
   {
-    if ((gim.sensor.yaw_relative_angle >= YAW_ANGLE_MIN - limit_angle_range - 35) && \
-        (gim.sensor.yaw_relative_angle <= YAW_ANGLE_MAX + limit_angle_range + 35))
+    if (gim.sensor.yaw_relative_angle >= YAW_ANGLE_MIN - limit_angle_range && 
+        gim.sensor.yaw_relative_angle <= YAW_ANGLE_MAX + limit_angle_range )
     {
       gim.pid.yaw_angle_ref += rm.yaw_v * GIMBAL_RC_MOVE_RATIO_YAW
                              + km.yaw_v * GIMBAL_PC_MOVE_RATIO_YAW;
@@ -430,8 +430,8 @@ void closed_loop_handler(void)
   }
   else
   {
-    if ((gim.sensor.yaw_relative_angle >= YAW_ANGLE_MIN - limit_angle_range) && \
-        (gim.sensor.yaw_relative_angle <= YAW_ANGLE_MAX + limit_angle_range))
+    if (gim.sensor.yaw_relative_angle >= YAW_ANGLE_MIN - limit_angle_range && 
+        gim.sensor.yaw_relative_angle <= YAW_ANGLE_MAX + limit_angle_range)
     {
       gim.pid.yaw_angle_ref += rm.yaw_v * GIMBAL_RC_MOVE_RATIO_YAW
                              + km.yaw_v * GIMBAL_PC_MOVE_RATIO_YAW;
@@ -441,8 +441,8 @@ void closed_loop_handler(void)
   }
   
   /* limit gimbal pitch axis angle */
-  if ((gim.sensor.pit_relative_angle >= PIT_ANGLE_MIN - limit_angle_range) && \
-      (gim.sensor.pit_relative_angle <= PIT_ANGLE_MAX + limit_angle_range))
+  if (gim.sensor.pit_relative_angle >= PIT_ANGLE_MIN - limit_angle_range && 
+      gim.sensor.pit_relative_angle <= PIT_ANGLE_MAX + limit_angle_range)
   {
     gim.pid.pit_angle_ref += rm.pit_v * GIMBAL_RC_MOVE_RATIO_PIT
                        + km.pit_v * GIMBAL_PC_MOVE_RATIO_PIT;
@@ -468,11 +468,6 @@ void pc_position_ctrl_handler(void)
   while(gim.pid.yaw_angle_ref < -180.0f) gim.pid.yaw_angle_ref += 360.0f;
   VAL_LIMIT(gim.pid.pit_angle_ref, PIT_ANGLE_MIN, PIT_ANGLE_MAX);
 }
-
-
-
-
-
 
 /* camera on gimbal */
 extern uint32_t pc_yaw_time;

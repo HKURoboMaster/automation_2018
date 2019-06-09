@@ -34,9 +34,9 @@
 #define CHASSIS_PERIOD 10
 #define origin_twist 0
 #define simple_twist 0
-#define time_twist 1
+#define time_twist 0
 #define sin_twist 0
-//#define ROTATING
+#define ROTATING
 
 typedef enum
 {

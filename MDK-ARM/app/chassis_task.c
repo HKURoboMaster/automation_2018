@@ -189,7 +189,7 @@ void chassis_stop_handler(void)
 
 int8_t   twist_side = 1;
 int8_t   twist_sign = 1;
-uint32_t twist_count;
+int32_t twist_count;
 uint32_t now_tick;
 uint32_t last_tick = 0;
 
@@ -292,13 +292,14 @@ static void chassis_twist_handler(void)
   now_tick = HAL_GetTick();
   twist_count += twist_sign * (now_tick-last_tick);
   last_tick = now_tick;
-  if(twist_count >= 1000 || twist_count <= -1000)
+  if(twist_count >= 500 || twist_count <= -500)
   {
+		twist_count = twist_count>0?500:-500;
     twist_sign *= -1;
   }
   float vx = chassis.vx;
 	float vy = chassis.vy;
-  chassis.vw = twist_sign * sin(PI * twist_count / 1000) * CHASSIS_RC_MAX_SPEED_R;
+  chassis.vw = twist_sign * sin(PI * twist_count / 500) * CHASSIS_RC_MAX_SPEED_R;
   chassis.vx = vx * cos(PI * gim.sensor.yaw_relative_angle / 180) - vy * sin(PI * gim.sensor.yaw_relative_angle / 180);
 	chassis.vy = vx * sin(PI * gim.sensor.yaw_relative_angle / 180) + vy * cos(PI * gim.sensor.yaw_relative_angle / 180);
   #endif

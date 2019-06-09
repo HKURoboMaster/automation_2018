@@ -323,7 +323,7 @@ static void chassis_mode_handler(void)
     {
       /* keyboard trigger chassis twist mode */
       uint8_t back_to_netural = gim.sensor.yaw_relative_angle < 5 && gim.sensor.yaw_relative_angle > -5 ? 1 : 0;
-      if (km.twist_ctrl || chassis.ctrl_mode==DODGE_MODE && !back_to_netural) 
+      if (km.twist_ctrl || (chassis.ctrl_mode==DODGE_MODE && !back_to_netural))
       { //two situation for dodging: the key is pressed, 
         //               or (the key is not pressed but) the chassis is still dodging and the gimbal hasn't come back to netural
         chassis.ctrl_mode = DODGE_MODE;
